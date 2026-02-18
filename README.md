@@ -1,4 +1,6 @@
-# Virtual Machine Hardening 🛡️ - Currently In Progress... ⚠️
+# Virtual Machine Hardening 🛡️ 
+
+- Currently In Progress... ⚠️
 
 ## Step 1: Verify Downloads 🚩
 
