@@ -1,229 +1,222 @@
-# Virtual Machine Hardening 🛡️ 
+# Virtual Machine Hardening Guide 🛡️
 
-- Currently In Progress... ⚠️
-
-## Step 1: Verify Downloads 🚩
-
-Before installing anything, like **VirtualBox** or **Ubuntu**, always verify the **integrity** and **authenticity** of your files. This ensures the software hasn’t been tampered with or corrupted. Verification is a core cybersecurity best practice recommended by Ubuntu, VirtualBox, NIST, and SANS.
+*Work in progress* ⚠️
 
 ---
 
-> 💡 Note: When I first tried to find the SHA256 checksum for Ubuntu, it wasn’t immediately visible on the release page like it had been in the past. I had to click on the download link, which brought me to the page where the checksum was located.
->
-> Keep in mind that Ubuntu may change the location of checksums again in the future. Always make sure you are obtaining the checksum from the [**official Ubuntu site**](https://ubuntu.com/download).
+# Step 1: Verify Downloads 🚩
+
+Before installing software such as **VirtualBox** or **Ubuntu**, always verify file **integrity** and **authenticity**.
+
+This ensures the download has not been corrupted or tampered. Verifying the integrity of files is recommended by Ubuntu, VirtualBox, NIST, and SANS.
 
 ---
 
-## Ubuntu ISO Verification
+# Step 1a: Verify VirtualBox Installer 📦
 
-Ubuntu publishes official SHA256 checksums for all release images. Always download files from the **official Ubuntu releases page**:
+VirtualBox publishes SHA256 checksums on its official downloads page:
+https://www.virtualbox.org/wiki/Downloads  
 
-- [Ubuntu Releases](https://releases.ubuntu.com/) – Look for `SHA256SUMS` and optionally `SHA256SUMS.gpg` for signature verification.
+⚠️ Replace filenames below with the installer you downloaded.
 
->
-> ⚠️ Replace `ubuntu-XX.XX-desktop-amd64.iso` with your downloaded filename from the official page.
-
-### Linux / MacOS
+<details>
+<summary>💻 Linux</summary>
 
 ```bash
-
-# Navigate to your download directory
-
 cd ~/Downloads
-
-# Linux: generate SHA256 hash
-
-sha256sum ubuntu-XX.XX-desktop-amd64.iso
-
-# macOS: generate SHA256 hash
-
-shasum -a 256 ubuntu-XX.XX-desktop-amd64.iso
-
-```
-
----
-
->
->🗒️ Compare the output to the official SHA256 checksum on the Ubuntu website.
-> They must match exactly before you proceed. If the hashes do not match,
-> re-download the ISO from the official page. Continue to the
-> **Compare ISO Hash to Official Checksum** section below to learn how.
-
----
-
-### Windows (PowerShell)
-
-```powershell
-# Navigate to your download directory
-
-cd C:\Users\YourName\Downloads
-
-# Generate SHA256 hash
-
-Get-FileHash .\ubuntu-XX.XX-desktop-amd64.iso -Algorithm SHA256
-
-```
-
-**Optional: GPG Signature Verification**
-Ubuntu also provides a GPG-signed checksum file (SHA256SUMS.gpg) for additional verification:
-
-[Ubuntu Image Verification Guide](https://ubuntu.com/tutorials/how-to-verify-ubuntu#4-retrieve-the-correct-signature-key)
-
-This adds cryptographic assurance that the file is authentic and has not been tampered with.
-
----
-
-## Step 2: VirtualBox Installer Verification
-
-VirtualBox publishes SHA256 checksums for all installers on their official downloads page.
-
-⚠️ Replace `VirtualBox-6.X.X-xxxxxx-Linux.run`, `shasum -a 256 VirtualBox-6.X.X-xxxxxx-OSX.dmg`,
-or `.\VirtualBox-6.X.X-xxxxxx-Win.exe` with the filename you downloaded from the official page.
-
-### VirtualBox Downloads
-
-### Linux / MacOS
-
-```bash
-# Navigate to your download directory
-cd ~/Downloads
-
-# Linux: generate SHA256 hash for VirtualBox installer
 sha256sum VirtualBox-6.X.X-xxxxxx-Linux.run
+```
+</details> <details> <summary>🍏 macOS</summary>
 
-# macOS: generate SHA256 hash for VirtualBox installer
+```bash
+cd ~/Downloads
 shasum -a 256 VirtualBox-6.X.X-xxxxxx-OSX.dmg
 ```
+</details> <details> <summary>🪟 Windows (PowerShell)</summary>
 
----
-
-> ⚠️ Compare the hash to the value listed on the VirtualBox site.
-> Continue to the **Compare ISO Hash to Official Checksum** section
-> below to learn how.
-
----
-
-### Windows (PowerShell)
-```powershell
-# Navigate to your download directory
-
-cd C:\Users\YourName\Downloads
-
-# Generate SHA256 hash
-
+```bash
+cd $env:USERPROFILE\Downloads
 Get-FileHash .\VirtualBox-6.X.X-xxxxxx-Win.exe -Algorithm SHA256
 ```
 
----
+</details>
 
-> 💡 On Windows, installers are also digitally signed.
-> A valid OS signature provides extra assurance but
-> does not replace hash verification.
+- Compare the output hash with the value listed on the VirtualBox website.
+    - Comparing hash outputs in the CLI is covered in later sections.
+- Hash values must match exactly before installing. Delete the file and re-download from the official site if hash values dont match.
 
----
-
-## Step 3: Compare ISO Hash to Official Checksum
-
-These commands verify that your downloaded ISO matches the official SHA256 checksum provided by the distributor.  
-
-You must have both the ISO file and the official `SHA256SUMS` file in the same folder.
+💡 On Windows, installers are also digitally signed.
+Signature validation adds assurance but does not replace hash verification.
 
 ---
 
-### Windows (PowerShell) 🪟
-```powershell
-    # Go to your Downloads folder
-    cd $env:USERPROFILE\Downloads
+# Step 1b: Verify Ubuntu ISO 🐧
 
-    # Calculate SHA256 hash of the ISO file
-    $isoHash = (Get-FileHash .\ubuntu-24.04.1-desktop-amd64.iso -Algorithm SHA256).Hash
+## Download from the official Ubuntu releases page
 
-    # Read the official hash for this ISO from SHA256SUMS
-    $officialHash = (Select-String "ubuntu-24.04.1-desktop-amd64.iso" .\SHA256SUMS).ToString().Split(" ")[0]
+Ubuntu publishes official SHA256 checksums for every release image.
+Always obtain both the ISO and checksum files from the official releases site:
 
-    # Compare the two hashes
-    if ($isoHash -eq $officialHash) {
-        Write-Host "✔ Hash matches — ISO verified"
-    } else {
-        Write-Host "✖ Hash mismatch — DO NOT USE"
-    }
-```
+- https://releases.ubuntu.com/
+
+    - Download:
+
+        - `ubuntu-XX.XX-desktop-amd64.iso`
+
+        - `SHA256SUMS`
+
+        - *(optional)* `SHA256SUMS.gpg`
+
 ---
 
-### macOS 🍏
-```powershell
-    # Go to your Downloads folder
-    cd ~/Downloads
+> 🛑 Replace `ubuntu-XX.XX-desktop-amd64.iso` with your actual downloaded filename.
 
-    # Verify the ISO against the official SHA256SUMS file
-    shasum -a 256 -c SHA256SUMS 2>&1 | grep ubuntu-24.04.1-desktop-amd64.iso
-
-    # Expected output if valid:
-    # ubuntu-24.04.1-desktop-amd64.iso: OK
-```
 ---
 
-## Linux 💻
+# Step 1c: Prepare
+## Files required for Hash Comparison 🗃️
+
+You should have these files in the same folder:
+
+1. **Ubuntu installation image**: `ubuntu-XX.XX-desktop-amd64.iso`
+
+2. **Official checksum list**: `SHA256SUMS`
+
+3. **Signed checksum file**: `SHA256SUMS.gpg` (optional)
+   - Ubuntu signs the checksum file to prove it was published by Ubuntu and not altered.
+   - Guide: https://ubuntu.com/tutorials/how-to-verify-ubuntu#4-retrieve-the-correct-signature-key
+
+---
+
+> 📔 The SHA256 checksum may not be directly visible on the main release page.
+> In some Ubuntu releases, you must click the ISO download link to get to where `SHA256SUMS` is listed.
+
+---
+
+# Step 2: Automatic ISO Verification (Recommended) 🔎
+
+Place both files in the same folder:
+
 ```bash
-    # Go to your Downloads folder
-    cd ~/Downloads
-
-    # Verify the ISO against the official SHA256SUMS file
-    sha256sum -c SHA256SUMS 2>&1 | grep ubuntu-24.04.1-desktop-amd64.iso
-
-    # Expected output if valid:
-    # ubuntu-24.04.1-desktop-amd64.iso: OK
+ISO file
+SHA256SUMS
 ```
+
+<details> <summary>💻 Linux</summary>
+
+```bash
+cd ~/Downloads
+sha256sum -c SHA256SUMS 2>&1 | grep ubuntu-24.04.1-desktop-amd64.iso
+```
+
+Expected:
+
+ubuntu-24.04.1-desktop-amd64.iso: OK
+
+### Explanation of Linux ISO Hash Verification
+
+- `sha256sum -c SHA256SUMS`  
+  Reads the downloaded **SHA256SUMS** file (from Ubuntu) and recomputes the SHA256 hash of each listed file on your system to check for a match.
+
+- `2>&1`  
+  Redirects error messages into standard output so they appear in the terminal output stream.
+
+- `grep ubuntu-24.04.1-desktop-amd64.iso`  
+  Filters the results to show only the line for your specific ISO file.
+
+🛑 Replace `ubuntu-24.04.1-desktop-amd64.iso` with the exact filename you downloaded.  
+The result must show `OK` and anything else means the file should **not** be used.
+
 ---
 
-## Manual Hash Comparison (Alternative)
+</details> <details> <summary>🍏 macOS</summary>
 
-If you prefer to compare hashes visually instead of automatic verification.
-
-## Windows
-```powershell 🪟
-    # Compute SHA256 hash of ISO
-    Get-FileHash .\ubuntu-24.04.1-desktop-amd64.iso -Algorithm SHA256
-
-    # Manually compare the displayed hash
-    # with the value in SHA256SUMS
+```bash
+cd ~/Downloads
+shasum -a 256 -c SHA256SUMS 2>&1 | grep ubuntu-24.04.1-desktop-amd64.iso
 ```
-## macOS 🍏
+
+Expected:
+
+ubuntu-24.04.1-desktop-amd64.iso: OK
+
+### Explanation of macOS ISO Hash Verification
+
+- `shasum -a 256 -c SHA256SUMS`  
+  Reads the local **SHA256SUMS** file (downloaded from Ubuntu) and recomputes the SHA256 hash of each listed file to verify it matches the official value.
+
+- `2>&1`  
+  Redirects error messages into standard output so they appear in the terminal output.
+
+- `grep ubuntu-24.04.1-desktop-amd64.iso`  
+  Filters the results to show only the verification line for your ISO file.
+
+- `SHA256SUMS` must already exist in the same folder.  
+  This is the official checksum list downloaded from Ubuntu alongside the ISO.
+
+---
+
+</details> <details> <summary>🪟 Windows (PowerShell)</summary>
+
 ```powershell
-    # Compute SHA256 hash of ISO
-    shasum -a 256 ubuntu-24.04.1-desktop-amd64.iso
+cd $env:USERPROFILE\Downloads
 
-    # Manually compare with SHA256SUMS
-```
-## Linux 💻
-```powershell
-    # Compute SHA256 hash of ISO
-    sha256sum ubuntu-24.04.1-desktop-amd64.iso
+$isoHash = (Get-FileHash .\ubuntu-24.04.1-desktop-amd64.iso -Algorithm SHA256).Hash
+$officialHash = (Select-String "ubuntu-24.04.1-desktop-amd64.iso" .\SHA256SUMS).ToString().Split(" ")[0]
 
-    # Manually compare with SHA256SUMS
+if ($isoHash -eq $officialHash) {
+    Write-Host "✔ Hash matches — ISO verified"
+} else {
+    Write-Host "✖ Hash mismatch — DO NOT USE"
+}
 ```
+### Explanation of Windows ISO Hash Verification
+
+- `Get-FileHash`  
+  Computes the SHA256 hash of your downloaded ISO file.
+
+- `Select-String`  
+  Searches the local **SHA256SUMS** file and extracts the official hash for your specific ISO filename.
+
+- `.Split(" ")[0]`  
+  The SHA256SUMS file stores the hash followed by the filename.  
+  Splitting on spaces returns only the hash portion for comparison.
+
+- `-eq` comparison  
+  Checks whether the locally calculated hash exactly matches the official hash.
+
+- Output  
+  - ✅ **Hash matches — ISO verified** → file integrity confirmed  
+  - ❌ **Hash mismatch — DO NOT USE** → file may be corrupted or tampered with
+    
 ---
 
-> ⚠️ The ISO is authentic only if the computed SHA256 hash exactly matches  
-> the official value in the `SHA256SUMS` file.
->
-> Any difference indicates corruption or tampering — DO NOT USE the file.
+</details>
 
 ---
 
-## Why This Matters
+## Why Verification Matters ❓
 
-Verifying downloads protects you from:
+> SHA256 creates a unique fingerprint for each file. Even a single byte difference produces a completely different hash, making it a reliable way to verify authenticity.
 
-- Corrupted or incomplete downloads
+Verifying downloads protects against:
 
-- Tampered files or supply-chain attacks
+- Corrupted downloads
 
-- File integrity issues introduced by mirrors or network errors
+- Tampered or malicious files
 
-Completing this step before installing any virtual machines or system software sets the foundation for safe VM hardening.
+- Supply-chain attacks
 
-> 🔐 **Tip:** SHA256 creates a unique fingerprint for each file. Even a single byte difference produces a completely different hash, making it a reliable way to verify authenticity.
+- Mirror/network errors
+
+---
+
+## Before You Go, Stay Safe!
+
+> 🔐
+> [VirusTotal](https://www.virustotal.com/gui/home/url) scans URLs, files, and hashes using multiple
+> antivirus engines.
+> It provides community safety reports, but does **not** guarantee 100% protection. Always exercise caution.
 
 ---
 
