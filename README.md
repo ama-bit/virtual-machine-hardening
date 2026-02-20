@@ -211,19 +211,10 @@ if ($isoHash -eq $officialHash) {
 Choose Your System
 <details> <summary>💻 Linux / 🍏 macOS</summary>
 
-```bash
-gpg --keyserver hkps://keyserver.ubuntu.com --recv-keys 0x46181433FBB75451
-gpg --verify SHA256SUMS.gpg SHA256SUMS
-```
 Expected Output: `Good signature from "Ubuntu CD Image Automatic Signing Key"`
 
 </details> <details> <summary>🪟 Windows (PowerShell)</summary>
-**Requires Gpg4win installed**.
 
-```powershell
-gpg --keyserver hkps://keyserver.ubuntu.com --recv-keys 0x46181433FBB75451
-gpg --verify SHA256SUMS.gpg SHA256SUMS
-```
 Expected Output: `Good signature from "Ubuntu CD Image Automatic Signing Key"`
 
 </details>
@@ -244,8 +235,6 @@ GPG separates:
 - **Signature validity** ➡️ cryptographically correct  
 - **Key trust** ➡️ whether you personally trust the signer  
 
-If the key fingerprint matches Ubuntu’s official signing key, the signature is valid
-and the file is authentic.
 ```
 </details> </details>
 
