@@ -2,10 +2,11 @@
 
 ⚠️ Draft — content under active refinement
 
-In the first guide, securely set up an Ubuntu virtual machine by verifying and installing VirtualBox,
+In the first guide (vm-verify.md), securely set up an Ubuntu virtual machine by verifying and installing VirtualBox,
 then validating Ubuntu installation media using SHA256 checksums and GPG signatures.
 
-In the next guide, install and harden your VM.
+In the next guide (vm-install-harden.md), install and harden your VM.
+
 
 ---
 
