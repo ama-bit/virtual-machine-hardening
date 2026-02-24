@@ -32,7 +32,7 @@ Verify software authenticity before installation:
 - Ubuntu ISO checksum verification  
 - Optional GPG signature validation  
 
-↪️ See: **verify.md**
+↪️ See: **vm-verify.md**
 
 ---
 
@@ -45,7 +45,7 @@ Secure virtual machine deployment:
 - VirtualBox isolation controls  
 - Maintenance & verification  
 
-↪️ See: **install-vm.md**
+↪️ See: **vm-install-harden.md**
 
 ---
 
