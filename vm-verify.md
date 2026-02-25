@@ -170,6 +170,8 @@ SHA256SUMS
 
 <details> <summary>💻 Linux</summary>
 
+**Verify**
+
 ```bash
 cd ~/Downloads
 sha256sum -c SHA256SUMS 2>&1 | grep ubuntu-24.04.1-desktop-amd64.iso
@@ -177,31 +179,27 @@ sha256sum -c SHA256SUMS 2>&1 | grep ubuntu-24.04.1-desktop-amd64.iso
 
 Expected Output: `ubuntu-24.04.1-desktop-amd64.iso: OK`
 
-https://help.ubuntu.com/community/HowToSHA256SUM
+References:
 
-Semi-automatic method `sha256sum -c SHA256SUMS 2>&1 | grep OK`
-"If the OK for your file appears, that indicates the hash matches."
+Ubuntu Community: [HowToSHA256SUM](https://help.ubuntu.com/community/HowToSHA256SUM)
 
-https://www.geeksforgeeks.org/linux-unix/generating-an-sha-256-hash-from-the-command-line/
+GeeksforGeeks: [SHA-256 on Linux/Unix](https://www.geeksforgeeks.org/linux-unix/generating-an-sha-256-hash-from-the-command-line/)
 
-"To generate a SHA-256 checksum for a file: `sha256sum filename`
-To verify a file against a provided checksum: `sha256sum -c checksumfile`
-The checksumfile should contain the expected hash followed by the filename."
+To generate a SHA-256 checksum: sha256sum filename
+To verify: sha256sum -c checksumfile
+The checksumfile should contain the expected hash followed by the filename.
 
-https://www.linux.org/docs/man1/sha256sum.html
+Linux man page: [sha256sum](https://www.linux.org/docs/man1/sha256sum.html)
 
-"sha256sum - compute and check SHA256 message digest
-       Print or check SHA256 (256-bit) checksums.  With no FILE, or when FILE is -, read standard input.
-       `-c, --check`"
+-c, --check -> check SHA256 checksums from a file
+
 
 </details> <details> <summary>🍏 macOS</summary>
 
 ```bash
 cd ~/Downloads
-shasum -a 256 -c SHA256SUMS 2>&1 | grep ubuntu-24.04.1-desktop-amd64.iso
+shasum -a 256 SHA256SUMS ubuntu-24.04.1-desktop-amd64.iso
 ```
-
-Expected Output: `ubuntu-24.04.1-desktop-amd64.iso: OK`
 
 </details> 
 <details> <summary>🪟 Windows (PowerShell)</summary>
