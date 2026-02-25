@@ -37,15 +37,15 @@ This guide provides support for the following operating systems/platforms:
 
 ### VirtualBox
 
-Official downloads and SHA256 hashes:  
+VirtualBox Download Page:  
 https://www.virtualbox.org/wiki/Downloads
 
 ```
 - Download the installer under `VirtualBox Platform Packages`
-- SHA256 hash is listed under `File Checksums → SHA256`
+- SHA256 hash is listed under `File Checksums -> SHA256`
 ```
 ❗ Always obtain software and checksum data from official vendor-controlled pages.  
-> Once downloaded, do **not** install until hash verification is complete (Step 2).
+> Once downloaded, do **not** install until hash verification is complete, which is covered in **Step 2**.
 
 ---
 
@@ -58,7 +58,7 @@ https://releases.ubuntu.com/
 - SHA256SUMS  
 - (optional) SHA256SUMS.gpg  
 ```
-📓 In some releases, the checksum appears only after opening the ISO download page.
+📓 In some releases, I've noticed the checksum now appears only after opening the ISO download page.
 
 </details>
 
@@ -74,19 +74,19 @@ https://releases.ubuntu.com/
 - Verification ensures downloaded files exactly match the vendor’s official release
 and have not been altered.
 
-- SHA256 hashes are like fingerprints, any difference produces a different hash.
+- SHA256 hashes are similar to fingerprints, any difference produces a different print, or hash.
 
-- Peace of mind knowing you've done your due-diligence in mitigating risk.
+- Peace of mind knowing you've done your due-diligence in mitigating risk of installing tampered or corrupt files.
 
 ```
 ### Verification methods covered
 
 ```markdown
-1. Manual — VirtualBox installer (website hash)  
+1. Manual - VirtualBox installer (website hash)  
 
-2. Automatic — Ubuntu ISO (SHA256SUMS)  
+2. Automatic - Ubuntu ISO (SHA256SUMS)  
 
-3. Optional — Ubuntu checksum signature (GPG)  
+3. Optional - Ubuntu checksum signature (GPG)  
 ```
 ---
 
@@ -114,6 +114,8 @@ Hash values must match exactly before installing.
 ```
 ### Choose Your System
 
+Click on your specific OS below to see tailored commands. Replace the VirtualBox example filename with your downloaded VBox file.
+
 <details>
 <summary>💻 Linux</summary>
 
@@ -138,7 +140,7 @@ Get-FileHash .\VirtualBox-6.X.X-xxxxxx-Win.exe -Algorithm SHA256
 
 </details>
 
-❗ Mismatch → delete installer and re-download from official site
+If hashes do NOT match ➡️ delete installer and re-download from official site
 
 </details>
 
@@ -174,6 +176,23 @@ sha256sum -c SHA256SUMS 2>&1 | grep ubuntu-24.04.1-desktop-amd64.iso
 ```
 
 Expected Output: `ubuntu-24.04.1-desktop-amd64.iso: OK`
+
+https://help.ubuntu.com/community/HowToSHA256SUM
+
+Semi-automatic method `sha256sum -c SHA256SUMS 2>&1 | grep OK`
+"If the OK for your file appears, that indicates the hash matches."
+
+https://www.geeksforgeeks.org/linux-unix/generating-an-sha-256-hash-from-the-command-line/
+
+"To generate a SHA-256 checksum for a file: `sha256sum filename`
+To verify a file against a provided checksum: `sha256sum -c checksumfile`
+The checksumfile should contain the expected hash followed by the filename."
+
+https://www.linux.org/docs/man1/sha256sum.html
+
+"sha256sum - compute and check SHA256 message digest
+       Print or check SHA256 (256-bit) checksums.  With no FILE, or when FILE is -, read standard input.
+       `-c, --check`"
 
 </details> <details> <summary>🍏 macOS</summary>
 
