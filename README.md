@@ -1,4 +1,5 @@
 # Virtual Machine Security Guide 🛡️
+⚠️ Draft: In progress...
 Secure Ubuntu VM setup in VirtualBox, from download verification, install, to hardened VM.
 
 >
