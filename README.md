@@ -2,7 +2,8 @@
 ⚠️ Draft: In progress...
 Secure Ubuntu VM setup in VirtualBox, from download verification, install, to hardened VM.
 
->
+
+
 > This project emphasizes supply chain integrity and VM hardening.
 > Always verify installation media before use.
 
