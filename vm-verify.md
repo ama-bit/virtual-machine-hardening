@@ -128,14 +128,14 @@ sha256sum VirtualBox-6.X.X-xxxxxx-Linux.run
 
 ```bash
 cd ~/Downloads
-shasum -a 256 VirtualBox-6.X.X-xxxxxx-OSX.dmg
+shasum -a 256 YOUR-FILENAME.dmg
 ```
 
 </details> <details> <summary>🪟 Windows (PowerShell)</summary>
 
 ```powershell
 cd $env:USERPROFILE\Downloads
-Get-FileHash .\VirtualBox-6.X.X-xxxxxx-Win.exe -Algorithm SHA256
+Get-FileHash .\YOUR-FILENAME.exe -Algorithm SHA256
 ```
 
 </details>
@@ -174,7 +174,7 @@ SHA256SUMS
 
 ```bash
 cd ~/Downloads
-sha256sum -c SHA256SUMS 2>&1 | grep ubuntu-24.04.1-desktop-amd64.iso
+sha256sum -c SHA256SUMS 2>&1 | grep YOUR-FILENAME.iso
 ```
 
 Expected Output: `ubuntu-24.04.1-desktop-amd64.iso: OK`
