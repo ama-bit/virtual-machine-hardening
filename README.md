@@ -2,9 +2,8 @@
 ⚠️ Draft: In progress...
 Secure Ubuntu VM setup in VirtualBox, from download verification, install, to hardened VM.
 
-
-
 > This project emphasizes supply chain integrity and VM hardening.
+> It is meant as a basic guide for anyone looking to setup a virtual machine in VirtualBox using an ISO like Ubuntu.
 > Always verify installation media before use.
 
 ---
@@ -32,7 +31,7 @@ Verify software authenticity before installation:
 
 - VirtualBox installer SHA256 verification  
 - Ubuntu ISO checksum verification  
-- Optional GPG signature validation  
+- Optional *but* reccomended GPG signature validation  
 
 ↪️ See: **vm-verify.md**
 
@@ -82,12 +81,12 @@ Secure virtual machine deployment:
 
 ## Result
 
-Following this guide yields:
+Outcome after following this guide:
 
 - Verified installation media  
 - Secure Ubuntu VM  
 - Hardened configuration baseline  
-- Reproducible trusted setup
+- Reproducible trusted setup including checklists
 
 ---
 
