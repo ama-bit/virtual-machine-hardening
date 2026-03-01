@@ -69,12 +69,18 @@ Secure virtual machine deployment:
 
 ## References
 
-- https://www.virtualbox.org/manual/topics/Security.html  
-- https://ubuntu.com/security  
-- https://ubuntu.com/tutorials/how-to-verify-ubuntu  
+- https://www.virtualbox.org/manual/topics/Security.html
+  
+- https://ubuntu.com/security
+
+- https://ubuntu.com/tutorials/how-to-verify-ubuntu
+  
 - https://linuxsecurity.com/features/what-are-checksums-why-should-you-be-using-them
+  
 - https://help.ubuntu.com/community/HowToSHA256SUM
+  
 - https://www.geeksforgeeks.org/linux-unix/generating-an-sha-256-hash-from-the-command-line/
+  
 - https://www.linux.org/docs/man1/sha256sum.html
 
 ---
