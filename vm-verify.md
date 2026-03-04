@@ -2,8 +2,8 @@
 
 ⚠️ Draft — content under active refinement
 
-Securely set up an Ubuntu virtual machine by verifying and installing VirtualBox,
-then validating Ubuntu installation media using SHA256 checksums and GPG signatures.
+Securely set up an Ubuntu VM by verifying and *installing* VirtualBox,
+then *validating* Ubuntu installation media using **SHA256** checksums and **GPG** signatures.
 
 ---
 
