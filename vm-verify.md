@@ -121,7 +121,7 @@ Click on your specific OS below to see tailored commands. Replace the VirtualBox
 
 ```bash
 cd ~/Downloads
-sha256sum VirtualBox-6.X.X-xxxxxx-Linux.run
+sha256sum YOUR-FILENAME.run
 ```
 
 </details> <details> <summary>🍏 macOS</summary>
