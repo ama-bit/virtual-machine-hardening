@@ -10,14 +10,14 @@ Secure Ubuntu VM setup in VirtualBox, from download verification, install, to ha
 
 ## Scope
 
-This repository provides a secure workflow:
+This repo offers a security-focused workflow:
 
 Download -> Verify -> Install -> Harden -> Maintain
 
 You will:
 
-- Verify VirtualBox installer authenticity  
-- Verify Ubuntu ISO integrity and signature  
+- Verify **VirtualBox installer** authenticity  
+- Verify **Ubuntu ISO** integrity and signature  
 - Install Ubuntu in VirtualBox securely  
 - Apply baseline VM and OS hardening
 - Create a maintainence checklist 
@@ -29,16 +29,16 @@ You will:
 ### Part 1: Download & Verification
 Verify software authenticity before installation:
 
-- VirtualBox installer SHA256 verification  
+- VirtualBox installer **SHA256** verification  
 - Ubuntu ISO checksum verification  
-- Optional *but* reccomended GPG signature validation  
+- Optional *but* reccomended **GPG** signature validation  
 
 ↪️ See: **vm-verify.md**
 
 ---
 
 ### Part 2: VM Install & Hardening
-Secure virtual machine deployment:
+Secure VM deployment:
 
 - VM creation with safe defaults  
 - Ubuntu installation  
@@ -61,34 +61,15 @@ Secure virtual machine deployment:
 ## Security Principles
 
 - Never install unverified software  
-- Hash mismatch = possible compromise (delete file, download from official source, verify)  
+- Hash mismatch => possible compromise (delete file, download from official source, verify)  
 - Trust cryptographic verification, not mirrors  
 - Isolate VMs from host unless required  
-
----
-
-## References
-
-- https://www.virtualbox.org/manual/topics/Security.html
-  
-- https://ubuntu.com/security
-
-- https://ubuntu.com/tutorials/how-to-verify-ubuntu
-  
-- https://linuxsecurity.com/features/what-are-checksums-why-should-you-be-using-them
-  
-- https://help.ubuntu.com/community/HowToSHA256SUM
-  
-- https://www.geeksforgeeks.org/linux-unix/generating-an-sha-256-hash-from-the-command-line/
-  
-- https://www.linux.org/docs/man1/sha256sum.html
 
 ---
 
 ## Result
 
 Outcome after following this guide:
-
 - Verified installation media  
 - Secure Ubuntu VM  
 - Hardened configuration baseline  
@@ -96,3 +77,16 @@ Outcome after following this guide:
 
 ---
 
+## References
+
+- https://www.virtualbox.org/manual/topics/Security.html
+- https://ubuntu.com/security
+- https://ubuntu.com/tutorials/how-to-verify-ubuntu 
+- https://linuxsecurity.com/features/what-are-checksums-why-should-you-be-using-them
+- https://help.ubuntu.com/community/HowToSHA256SUM 
+- https://www.geeksforgeeks.org/linux-unix/generating-an-sha-256-hash-from-the-command-line/  
+- https://www.linux.org/docs/man1/sha256sum.html
+
+---
+
+## Thank you!
