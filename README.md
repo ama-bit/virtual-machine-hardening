@@ -12,15 +12,15 @@ Secure Ubuntu VM setup in VirtualBox, from download verification, install, to ha
 
 This repo offers a security-focused workflow:
 
-Download -> Verify -> Install -> Harden -> Maintain
+**Download** from Official Source -> **Verify** -> **Install** -> **Harden** -> **Maintain**
 
 You will:
 
-- Verify **VirtualBox installer** authenticity  
-- Verify **Ubuntu ISO** integrity and signature  
-- Install Ubuntu in VirtualBox securely  
-- Apply baseline VM and OS hardening
-- Create a maintainence checklist 
+1. Verify **VirtualBox installer** authenticity
+2. Verify **Ubuntu ISO** integrity and signature
+3. Install Ubuntu in VirtualBox securely
+4. Apply baseline VM and OS hardening
+5. Create a maintainence checklist 
 
 ---
 
@@ -29,22 +29,23 @@ You will:
 ### Part 1: Download & Verification
 Verify software authenticity before installation:
 
-- VirtualBox installer **SHA256** verification  
-- Ubuntu ISO checksum verification  
-- Optional *but* reccomended **GPG** signature validation  
+1. VirtualBox installer **SHA256** verification
+2. Ubuntu ISO checksum verification
+3. Optional *but* reccomended **GPG** signature validation  
 
 ↪️ See: **vm-verify.md**
 
 ---
 
 ### Part 2: VM Install & Hardening
+
 Secure VM deployment:
 
-- VM creation with safe defaults  
-- Ubuntu installation  
-- OS hardening  
-- VirtualBox isolation controls  
-- Maintenance & verification  
+1. VM creation with safe defaults
+2. Ubuntu installation
+3. OS hardening
+4. VirtualBox isolation controls
+5. Maintenance & verification  
 
 ↪️ See: **vm-install-harden.md**
 
@@ -52,16 +53,16 @@ Secure VM deployment:
 
 ## Supported Host Platforms for Guide 1 & 2
 
-- 💻 Linux  
-- 🍏 macOS  
-- 🪟 Windows (PowerShell)
+💻 Linux  
+🍏 macOS  
+🪟 Windows (PowerShell)
 
 ---
 
 ## Security Principles
 
 - Never install unverified software  
-- Hash mismatch => possible compromise (delete file, download from official source, verify)  
+- Hash mismatch = possible compromise (delete file, download from official source, verify)  
 - Trust cryptographic verification, not mirrors  
 - Isolate VMs from host unless required  
 
@@ -69,23 +70,18 @@ Secure VM deployment:
 
 ## Result
 
-Outcome after following this guide:
-- Verified installation media  
-- Secure Ubuntu VM  
-- Hardened configuration baseline  
-- Reproducible trusted setup including checklists
+The outcome after following this guide is to have verified installation media, a secure Ubuntu VM with a hardened configuration baseline, and a reproducible trusted setup including checklists for future reference.
 
 ---
 
 ## References
-
-- https://www.virtualbox.org/manual/topics/Security.html
-- https://ubuntu.com/security
-- https://ubuntu.com/tutorials/how-to-verify-ubuntu 
-- https://linuxsecurity.com/features/what-are-checksums-why-should-you-be-using-them
-- https://help.ubuntu.com/community/HowToSHA256SUM 
-- https://www.geeksforgeeks.org/linux-unix/generating-an-sha-256-hash-from-the-command-line/  
-- https://www.linux.org/docs/man1/sha256sum.html
+1. https://www.virtualbox.org/manual/topics/Security.html
+2. https://ubuntu.com/security
+3. https://ubuntu.com/tutorials/how-to-verify-ubuntu
+4. https://linuxsecurity.com/features/what-are-checksums-why-should-you-be-using-them
+5. https://help.ubuntu.com/community/HowToSHA256SUM
+6. https://www.geeksforgeeks.org/linux-unix/generating-an-sha-256-hash-from-the-command-line/
+7. https://www.linux.org/docs/man1/sha256sum.html
 
 ---
 
