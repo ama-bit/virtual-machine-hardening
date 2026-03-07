@@ -24,9 +24,9 @@ Download ➡️ Verify Hash ➡️ Verify Signature (optional)
 
 This guide provides support for the following operating systems/platforms:
 ```md
-• 💻 Linux  
-• 🍏 macOS  
-• 🪟 Windows (PowerShell)  
+💻 Linux  
+🍏 macOS  
+🪟 Windows (PowerShell)  
 ```
 ---
 
@@ -294,9 +294,9 @@ Abort installation and obtain a fresh copy from the official source.
 
 ### By now you have obtained and verified the following:
 ```md
-- VirtualBox installer  
-- Ubuntu ISO  
-- GPG signature (optional)  
+1. VirtualBox installer  
+2. Ubuntu ISO  
+3. GPG signature (optional)  
 ```
 🛑 Only proceed if all hashes match official values.
 
@@ -304,9 +304,9 @@ Abort installation and obtain a fresh copy from the official source.
 
 ### VirtualBox Installer Files per Platform/OS
 ```md
-- Windows → `.exe`  
-- macOS → `.dmg`  
-- Linux → `.run` or package manager  
+Windows → `.exe`  
+macOS → `.dmg`  
+Linux → `.run` or package manager  
 ```
 
 ---
@@ -322,9 +322,9 @@ Abort installation and obtain a fresh copy from the official source.
 
 ### Security Thoughts 💭
 ```md
-- Never install unverified downloads  
-- Never ignore hash mismatches  
-- Delete & re-download from official page if verification fails  
+1. Never install unverified downloads  
+2. Never ignore hash mismatches  
+3. Delete & re-download from official page if verification fails  
 ```
 </details>
 
@@ -370,5 +370,9 @@ Abort installation and obtain a fresh copy from the official source.
 
 
 </details>
+
+---
+
+## Thank You!
 
 ---
