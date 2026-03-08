@@ -14,9 +14,9 @@ Create VM ➡️ Install Ubuntu ➡️ Basic Hardening ➡️ Post-Install Check
 
 Supported platforms for VirtualBox host:
 
-• 💻 Linux  
-• 🍏 macOS  
-• 🪟 Windows (PowerShell)  
+💻 Linux  
+🍏 macOS  
+🪟 Windows (PowerShell)  
 
 Each platform has its own dropdown section for commands where applicable.
 
