@@ -1,10 +1,20 @@
 # Virtual Machine Security & Verification Guide 🛡️
 
-⚠️ Draft — content under active refinement
+:construction: ***Draft — content under active development***
 
 Securely set up an Ubuntu VM by verifying and *installing* VirtualBox,
 then *validating* Ubuntu installation media using **SHA256** checksums and **GPG** signatures.
 
+## Threat Model
+
+Checksum and signature verification protect against:
+
+1. Corrupted downloads
+2. Compromised mirrors
+3. Man-in-the-middle attacks (MITM)
+4. Supply chain tampering
+
+Verification uses cryptographic hashes and digital signatures to confirm both integrity and authenticity.
 ---
 
 ## Scope
@@ -37,6 +47,8 @@ This guide provides support for the following operating systems/platforms:
 
 ### VirtualBox
 
+VirtualBox publishes individual hashes on its website rather than a checksum file for batch verification so the installer hash must be compared manually. 
+- Oracle VM VirtualBox
 VirtualBox Download Page:  
 https://www.virtualbox.org/wiki/Downloads
 
@@ -140,7 +152,7 @@ Get-FileHash .\YOUR-FILENAME.exe -Algorithm SHA256
 
 </details>
 
-If hashes do NOT match ➡️ delete installer and re-download from official site
+If hashes do NOT match ➡️ delete installer, investigate and re-download from official site
 
 </details>
 
@@ -198,7 +210,7 @@ Linux man page: [sha256sum](https://www.linux.org/docs/man1/sha256sum.html)
 
 ```bash
 cd ~/Downloads
-shasum -a 256 SHA256SUMS ubuntu-24.04.1-desktop-amd64.iso
+shasum -a 256 ubuntu-24.04.1-desktop-amd64.iso
 ```
 
 </details> 
@@ -207,13 +219,15 @@ shasum -a 256 SHA256SUMS ubuntu-24.04.1-desktop-amd64.iso
 ```powershell
 cd $env:USERPROFILE\Downloads
 
-$isoHash = (Get-FileHash .\ubuntu-24.04.1-desktop-amd64.iso -Algorithm SHA256).Hash
-$officialHash = (Select-String "ubuntu-24.04.1-desktop-amd64.iso" .\SHA256SUMS).ToString().Split(" ")[0]
+$iso = "ubuntu-24.04.1-desktop-amd64.iso"
+
+$isoHash = (Get-FileHash $iso -Algorithm SHA256).Hash
+$officialHash = (Select-String $iso SHA256SUMS).Line.Split(" ")[0]
 
 if ($isoHash -eq $officialHash) {
-    Write-Host "✔ Hash matches — ISO verified"
+    "✔ Hash matches — ISO verified"
 } else {
-    Write-Host "✖ Hash mismatch — DO NOT USE"
+    "✖ Hash mismatch — DO NOT USE"
 }
 ```
 
@@ -241,7 +255,7 @@ Expected Output: `✔ Hash matches — ISO verified`
 
 - `SHA256SUMS.gpg`
 ```
-Choose Your System
+### Choose Your System
 <details> <summary>💻 Linux / 🍏 macOS</summary>
 
 Expected Output: `Good signature from "Ubuntu CD Image Automatic Signing Key"`
@@ -282,7 +296,8 @@ GPG separates:
 ```md
 - Obtained directly from the official vendor distribution site  
 - Cryptographic hash matches the official checksum list  
-- Verification reports success with no warnings or errors  
+- Verification reports success with no warnings or errors
+- Download performed over HTTPS from the official vendor domain 
 
 ✅ Result: authenticity and integrity verified  
 
