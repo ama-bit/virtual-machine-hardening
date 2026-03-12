@@ -2,8 +2,10 @@
 
 :construction: ***Draft — content under active development***
 
-Securely set up an Ubuntu VM by verifying and *installing* VirtualBox,
-then *validating* Ubuntu installation media using **SHA256** checksums and **GPG** signatures.
+Securely set up an Ubuntu VM by verifying and installing **VirtualBox**,
+then validating **Ubuntu** installation media using **SHA256** checksums and **GPG** signatures.
+
+---
 
 ## Threat Model
 
@@ -15,6 +17,7 @@ Checksum and signature verification protect against:
 4. Supply chain tampering
 
 Verification uses cryptographic hashes and digital signatures to confirm both integrity and authenticity.
+
 ---
 
 ## Scope
