@@ -7,6 +7,22 @@ then validating **Ubuntu** installation media using **SHA256** checksums and **G
 
 ---
 
+## Table of Contents
+
+- [Threat Model](#threat-model)
+- [Scope](#scope)
+- [Platform Specific Commands](#platform-specific-commands)
+- [Step 1: Download from Official Sources](#-step-1-download-from-official-sources)
+- [Step 2: Verify Downloads](#-step-2-verify-downloads)
+  - [Step 2a: Manual Verification (VirtualBox)](#-step-2a-manual-verification-virtualbox-installer)
+  - [Step 2b: Automatic Verification (Ubuntu ISO)](#-step-2b-automatic-verification-ubuntu-iso)
+  - [Step 2c: Verify Ubuntu Checksum Signature (GPG)](#-step-2c-verify-ubuntu-checksum-signature-gpg)
+- [Safe to Proceed?](#️-safe-to-proceed)
+- [Verification Checklist](#-step-3-verification-checklist)
+- [Links](#-links)
+
+---
+
 ## Threat Model
 
 Checksum and signature verification protect against:
@@ -20,11 +36,23 @@ Verification uses cryptographic hashes and digital signatures to confirm both in
 
 ---
 
+## Tools Used
+
+The following tools are used to verify software authenticity and integrity before installation.
+
+1. **Oracle VM VirtualBox**: For creating VMs
+2. **Ubuntu ISO**: Installation media
+3. **GnuPG**: Verify checksum signatures
+4. **SHA256 hashing**: Verifying file integrity
+5. **Powershell/Terminal**: Running verification commands
+
+---
+
 ## Scope
 
 **This Guide**
 ```md
-Download ➡️ Verify Hash ➡️ Verify Signature (optional)
+Download ISO ➡️ Verify GPG Signature (Authenticity) ➡️ Verify ISO Hash (Integrity)
 ```
 
 **Next Guide**
@@ -152,6 +180,9 @@ shasum -a 256 YOUR-FILENAME.dmg
 cd $env:USERPROFILE\Downloads
 Get-FileHash .\YOUR-FILENAME.exe -Algorithm SHA256
 ```
+> :warning: Never bypass hash verification.
+> :warning: A mismatched hash or signature could indicate a malicious or corrupt file.
+> :warning: Only proceed when all verification steps pass.
 
 </details>
 
@@ -166,7 +197,7 @@ If hashes do NOT match ➡️ delete installer, investigate and re-download from
 <details> 
 <summary><strong>Open Step 2b</strong></summary>
     
-## Purpose
+### Purpose
 Verify Ubuntu ISO matches official checksum list.
 
 ## Process
@@ -189,7 +220,7 @@ SHA256SUMS
 
 ```bash
 cd ~/Downloads
-sha256sum -c SHA256SUMS 2>&1 | grep YOUR-FILENAME.iso
+sha256sum -c SHA256SUMS 2>&1 | grep OK
 ```
 
 Expected Output: `ubuntu-24.04.1-desktop-amd64.iso: OK`
@@ -214,7 +245,10 @@ Linux man page: [sha256sum](https://www.linux.org/docs/man1/sha256sum.html)
 ```bash
 cd ~/Downloads
 shasum -a 256 ubuntu-24.04.1-desktop-amd64.iso
+# Compare resulting hash with SHA256SUMS entry
 ```
+
+Compare the resulting hash with the value listed for the ISO in 'SHA256SUMS'.
 
 </details> 
 <details> <summary>🪟 Windows (PowerShell)</summary>
@@ -236,6 +270,10 @@ if ($isoHash -eq $officialHash) {
 
 Expected Output: `✔ Hash matches — ISO verified`
 
+> :warning: Never bypass hash verification.
+> :warning: A mismatched hash or signature could indicate a malicious or corrupt file.
+> :warning: Only proceed when all verification steps pass.
+
 </details> </details>
 
 ---
@@ -244,7 +282,7 @@ Expected Output: `✔ Hash matches — ISO verified`
 
 <details> <summary><strong>Open Step 2c</strong></summary>
 
-## **Purpose**
+### **Purpose**
 - Verify SHA256SUMS file is authentic and signed by Ubuntu.
 
 ## Why this matters
@@ -261,12 +299,24 @@ Expected Output: `✔ Hash matches — ISO verified`
 ### Choose Your System
 <details> <summary>💻 Linux / 🍏 macOS</summary>
 
-Expected Output: `Good signature from "Ubuntu CD Image Automatic Signing Key"`
+```bash
+gpg --keyid-format long --verify SHA256SUMS.gpg SHA256SUMS
+```
+
+Expected Output: `"Good signature from "Ubuntu CD Image Automatic Signing Key"`
 
 </details> <details> <summary>🪟 Windows (PowerShell)</summary>
 
-Expected Output: `Good signature from "Ubuntu CD Image Automatic Signing Key"`
+```bash
+# Windows requires Gpg4win
+gpg --verify SHA256SUMS.gpg SHA256SUMS
+```
+You may need to install Gpg4win which provides the gpg command, if you dont have it installed already.
 
+Expected Output:
+```bash
+Good signature from "Ubuntu CD Image Automatic Signing Key"
+```
 </details>
 
 ```md
@@ -283,10 +333,13 @@ It means your local GPG keyring has not yet assigned trust to the Ubuntu signing
 GPG separates:
 
 - **Signature validity** ➡️ cryptographically correct  
-- **Key trust** ➡️ whether you personally trust the signer  
-
+- **Key trust** ➡️ whether you personally trust the signer
 ```
-</details> </details>
+> :warning: Never bypass hash verification.
+> :warning: A mismatched hash or signature could indicate a malicious or corrupt file.
+> :warning: Only proceed when all verification steps pass.
+
+</details>
 
 ---
 
@@ -296,11 +349,13 @@ GPG separates:
 <summary><strong>Open Check</strong></summary>
 
 ### An ISO is considered trustworthy only if:
+
 ```md
-- Obtained directly from the official vendor distribution site  
+- Downloaded directly from the official distribution site  
 - Cryptographic hash matches the official checksum list  
 - Verification reports success with no warnings or errors
-- Download performed over HTTPS from the official vendor domain 
+- Download performed over HTTPS from the official vendor domain
+- GPG signature verification reports "Good Signature" 
 
 ✅ Result: authenticity and integrity verified  
 
@@ -344,6 +399,7 @@ Linux → `.run` or package manager
 2. Never ignore hash mismatches  
 3. Delete & re-download from official page if verification fails  
 ```
+
 </details>
 
 ---
@@ -361,6 +417,7 @@ Linux → `.run` or package manager
 - [ ] No warnings or errors
 
 > 🛑 If any item is unchecked, do not proceed. Delete affected files and re-download. 🛑
+
 </details>
 
 ---
