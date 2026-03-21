@@ -138,7 +138,7 @@ Ensure VM is secure and properly maintained.
 
 ---
 
-## 🔖 References / Links
+## 🔖 Links
 
 <details>
 <summary><strong>Open Links</strong></summary>    
@@ -150,3 +150,6 @@ Ensure VM is secure and properly maintained.
 </details>
 
 ---
+
+
+Thank You!
