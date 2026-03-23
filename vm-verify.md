@@ -32,11 +32,11 @@ Checksum and signature verification protect against:
 3. Man-in-the-middle attacks (MITM)
 4. Supply chain tampering
 
-Verification uses cryptographic hashes and digital signatures to confirm both integrity and authenticity.
+Verification uses hashes and signatures to confirm both integrity and authenticity.
 
 ---
 
-## Tools Used
+## Tools
 
 The following tools are used to verify software authenticity and integrity before installation.
 
