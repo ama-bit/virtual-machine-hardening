@@ -125,11 +125,17 @@ and have not been altered.
 ### Verification methods covered
 
 ```markdown
-1. Manual - VirtualBox installer (website hash)  
+1. Manual
 
-2. Automatic - Ubuntu ISO (SHA256SUMS)  
+VirtualBox installer (website hash)  
 
-3. Optional - Ubuntu checksum signature (GPG)  
+2. Automatic
+
+Ubuntu ISO (SHA256SUMS)  
+
+3. Optional
+
+Ubuntu checksum signature (GPG)  
 ```
 ---
 
