@@ -231,7 +231,7 @@ sha256sum -c SHA256SUMS 2>&1 | grep OK
 
 Expected Output: `ubuntu-24.04.1-desktop-amd64.iso: OK`
 
-References:
+Links:
 
 Ubuntu Community: [HowToSHA256SUM](https://help.ubuntu.com/community/HowToSHA256SUM)
 
