@@ -101,7 +101,7 @@ https://releases.ubuntu.com/
 - SHA256SUMS  
 - (optional) SHA256SUMS.gpg  
 ```
-📓 In some releases, I've noticed the checksum now appears only after opening the ISO download page.
+📓 In some releases, I've noticed the checksum now appears only after opening the ISO download page. Keep in mind the location may change in the future again so stay vigiliant.
 
 </details>
 
