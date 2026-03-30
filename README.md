@@ -24,7 +24,7 @@ You will:
 
 ---
 
-## Guide Structure
+## Structure
 
 ### Part 1: Download & Verification
 Verify software authenticity before installation:
