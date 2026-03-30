@@ -10,8 +10,6 @@ Secure Ubuntu VM setup in VirtualBox, from download verification, install, to ha
 
 ## Scope
 
-This repo offers a security-focused workflow:
-
 **Download** from Official Source -> **Verify** -> **Install** -> **Harden** -> **Maintain**
 
 You will:
@@ -24,7 +22,7 @@ You will:
 
 ---
 
-## Structure
+## Steps
 
 ### Part 1: Download & Verification
 Verify software authenticity before installation:
@@ -41,17 +39,17 @@ Verify software authenticity before installation:
 
 Secure VM deployment:
 
-1. VM creation with safe defaults
-2. Ubuntu installation
-3. OS hardening
-4. VirtualBox isolation controls
-5. Maintenance & verification  
+1. Create VM
+2. Install Ubuntu
+3. Harden OS
+4. Configure VirtualBox isolation controls
+5. Verify and maintain  
 
 ↪️ See: **vm-install-harden.md**
 
 ---
 
-## Supported Host Platforms for Guide 1 & 2
+## Supported Host Platforms for Guides 1 & 2
 
 💻 Linux  
 🍏 macOS  
