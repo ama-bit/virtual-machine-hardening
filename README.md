@@ -20,8 +20,6 @@ You will:
 4. Apply baseline VM and OS hardening
 5. Create a maintainence checklist
 
-
-
 ---
 
 ## Steps
