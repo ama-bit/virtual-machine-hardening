@@ -18,7 +18,9 @@ You will:
 2. Verify **Ubuntu ISO** integrity and signature
 3. Install Ubuntu in VirtualBox securely
 4. Apply baseline VM and OS hardening
-5. Create a maintainence checklist 
+5. Create a maintainence checklist
+
+
 
 ---
 
