@@ -42,7 +42,7 @@ Set up a new virtual machine with proper resources and attach the verified Ubunt
 
 <details><summary>💻 Linux / 🍏 macOS / 🪟 Windows</summary>
 
-- Instructions or commands for creating VM on each platform 🗒️
+- Instructions or commands for creating VM on each platform 
 
 </details>
 
@@ -150,3 +150,9 @@ Ensure VM is secure and properly maintained.
 </details>
 
 ---
+
+## THANK YOU
+
+---
+
+
