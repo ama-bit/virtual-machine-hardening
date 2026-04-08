@@ -28,7 +28,7 @@ Secure Ubuntu VM setup in VirtualBox, from download verification, install, to ha
 
 ## Steps
 
-### Part 1: Download & Verification
+### Step 1: Download & Verification
 Verify software authenticity before installation:
 
 1. VirtualBox installer **SHA256** verification
@@ -39,7 +39,7 @@ Verify software authenticity before installation:
 
 ---
 
-### Part 2: VM Install & Hardening
+### Step 2: VM Install & Hardening
 
 Secure VM deployment:
 
