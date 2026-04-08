@@ -8,21 +8,21 @@ Secure Ubuntu VM setup in VirtualBox, from download verification, install, to ha
 
 ---
 
-## Scope
+## Goals
 
-**Download** from Official Source ---> **Verify** ---> **Install** ---> **Harden** ---> **Maintain**
+> **Verify** Source --> **Download** Files --> **Verify** Integrity --> **Install** Files --> **Harden** VM --> **Maintain** > **Secure** VM
 
-You will:
-
-1. Verify **VirtualBox installer** authenticity
+1. Verify **Official** Source Pages for all downloads before downloading
+  
+2. Verify **VirtualBox installer** authenticity
    
 3. Verify **Ubuntu ISO** integrity and signature
    
-5. Install Ubuntu in VirtualBox securely
+4. Securely install **Ubuntu in VirtualBox**
    
-7. Apply baseline VM and OS hardening
+5. Apply baseline **VM and OS hardening**
    
-9. Create a maintainence checklist
+6. Create a secure maintainence **checklist**
 
 ---
 
