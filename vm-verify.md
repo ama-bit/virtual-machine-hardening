@@ -7,22 +7,6 @@ then validating **Ubuntu** installation media using **SHA256** checksums and **G
 
 ---
 
-## Table of Contents
-
-- [Threat Model](#threat-model)
-- [Scope](#scope)
-- [Platform Specific Commands](#platform-specific-commands)
-- [Step 1: Download from Official Sources](#-step-1-download-from-official-sources)
-- [Step 2: Verify Downloads](#-step-2-verify-downloads)
-  - [Step 2a: Manual Verification (VirtualBox)](#-step-2a-manual-verification-virtualbox-installer)
-  - [Step 2b: Automatic Verification (Ubuntu ISO)](#-step-2b-automatic-verification-ubuntu-iso)
-  - [Step 2c: Verify Ubuntu Checksum Signature (GPG)](#-step-2c-verify-ubuntu-checksum-signature-gpg)
-- [Safe to Proceed?](#️-safe-to-proceed)
-- [Verification Checklist](#-step-3-verification-checklist)
-- [Links](#-links)
-
----
-
 ## Threat Model
 
 Checksum and signature verification protect against:
