@@ -1,27 +1,34 @@
-# Virtual Machine Security Guide 🛡️
+# Secure VM Setup Guide🛡️
 ⚠️ Draft: In progress...
-Secure Ubuntu VM setup in VirtualBox, from download verification, install, to hardened VM.
+Secure Ubuntu Virtual Machine (VM) setup in VirtualBox, from download verification, install, to hardened VM.
 
 > This project emphasizes supply chain integrity and VM hardening.
-> It is meant as a basic guide for anyone looking to setup a virtual machine in VirtualBox using an ISO like Ubuntu.
+> It is meant as a basic guide to securely setup a VM in VirtualBox using an ISO like Ubuntu.
 > Always verify installation media before use.
 
 ---
-
 ## Goals
 
 > **Verify** Source --> **Download** Files --> **Verify** Integrity --> **Install** Files --> **Harden** VM --> **Maintain** > **Secure** VM
 
-1. Verify **Official** Source Pages for all downloads before downloading
+**Verify**
+
+1. **Official** Source Pages for all downloads before downloading
   
-2. Verify **VirtualBox installer** authenticity
+2. **VirtualBox installer** authenticity
    
-3. Verify **Ubuntu ISO** integrity and signature
+3. **Ubuntu ISO** integrity and signature
    
-4. Securely install **Ubuntu in VirtualBox**
-   
+**Download**
+
+4. Securely install **Ubuntu in VirtualBox** after full verification is successful
+
+**Harden/Secure**
+
 5. Apply baseline **VM and OS hardening**
    
+**Maintain**
+
 6. Create a secure maintainence **checklist**
 
 ---
