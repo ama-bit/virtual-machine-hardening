@@ -16,19 +16,8 @@ Checksum and signature verification protect against:
 3. Man-in-the-middle attacks (MITM)
 4. Supply chain tampering
 
-Verification uses hashes and signatures to confirm both integrity and authenticity.
-
----
-
-## Tools
-
-The following tools are used to verify software authenticity and integrity before installation.
-
-1. **Oracle VM VirtualBox**: For creating VMs
-2. **Ubuntu ISO**: Installation media
-3. **GnuPG**: Verify checksum signatures
-4. **SHA256 hashing**: Verifying file integrity
-5. **Powershell/Terminal**: Running verification commands
+Verification confirms both **integrity** (file is unaltered) 
+and **authenticity** (file came from the official source).
 
 ---
 
@@ -36,7 +25,7 @@ The following tools are used to verify software authenticity and integrity befor
 
 **This Guide**
 ```md
-Download ISO ➡️ Verify GPG Signature (Authenticity) ➡️ Verify ISO Hash (Integrity)
+Download ➡️ Verify SHA256 (Integrity) ➡️ Verify GPG Signature (Authenticity)
 ```
 
 **Next Guide**
@@ -45,9 +34,17 @@ Download ISO ➡️ Verify GPG Signature (Authenticity) ➡️ Verify ISO Hash (
 ```
 ---
 
-### Platform Specific Commands
+## Tools
 
-This guide provides support for the following operating systems/platforms:
+| Tool | Purpose |
+|------|---------|
+| Oracle VM VirtualBox | Creates and runs VMs |
+| Ubuntu ISO | Installation media for the guest OS |
+| SHA256 hashing | Verifies file integrity |
+| GnuPG (GPG) | Verifies checksum authenticity |
+| Terminal / PowerShell | Runs verification commands |
+
+💡*This guide provides support for the following operating systems/platforms:*
 ```md
 💻 Linux  
 🍏 macOS  
@@ -60,32 +57,50 @@ This guide provides support for the following operating systems/platforms:
 <details>
 <summary><strong>Open Step 1</strong></summary>
 
+❗ Always download software and checksums directly from 
+official vendor-controlled pages.
+
+---
+
 ### VirtualBox
 
-VirtualBox publishes individual hashes on its website rather than a checksum file for batch verification so the installer hash must be compared manually. 
-- Oracle VM VirtualBox
-VirtualBox Download Page:  
-https://www.virtualbox.org/wiki/Downloads
+**Official page**: https://www.virtualbox.org/wiki/Downloads
 
+```md
+1. Download installer under: VirtualBox Platform Packages
+2. Note the SHA256 hash listed under: File Checksums → SHA256
 ```
-- Download the installer under `VirtualBox Platform Packages`
-- SHA256 hash is listed under `File Checksums -> SHA256`
+
+> VirtualBox publishes individual hashes on its download page rather 
+> than a checksum file. The hash must be compared manually in Step 2a.
+
+**Installer file by platform:**
+```md
+Windows → .exe  
+macOS   → .dmg  
+Linux   → .run or package manager
 ```
-❗ Always obtain software and checksum data from official vendor-controlled pages.  
-> Once downloaded, do **not** install until hash verification is complete, which is covered in **Step 2**.
+
+> Do **not** install until SHA256 verification is complete in Step 2.
 
 ---
 
 ### Ubuntu
 
-Official ISO, checksum, and GPG files:  
-https://releases.ubuntu.com/
+**Official page**: https://releases.ubuntu.com/
+
+Download all three files:
 ```md
 - ubuntu-XX.XX-desktop-amd64.iso  
 - SHA256SUMS  
-- (optional) SHA256SUMS.gpg  
+- SHA256SUMS.gpg  
 ```
-📓 In some releases, I've noticed the checksum now appears only after opening the ISO download page. Keep in mind the location may change in the future again so stay vigiliant.
+
+> 📓 In some releases the checksum appears only after opening the ISO 
+> download page. The location has changed in the past and may change again — always check the official 
+> page directly.
+
+> Do **not** install until all verification steps in Step 2 are complete.
 
 </details>
 
@@ -97,159 +112,193 @@ https://releases.ubuntu.com/
 <summary><strong>Open Step 2</strong></summary>
 
 ### Why Verify?
-```markdown
-- Verification ensures downloaded files exactly match the vendor’s official release
-and have not been altered.
 
-- SHA256 hashes are similar to fingerprints, any difference produces a different print, or hash.
+- Ensures downloaded files exactly match the vendor's official release
+- SHA256 hashes act as fingerprints — any alteration produces a 
+  different hash
+- GPG signatures confirm the checksum itself came from Ubuntu, 
+  not a malicious mirror
 
-- Peace of mind knowing you've done your due-diligence in mitigating risk of installing tampered or corrupt files.
+### Verification Methods
 
-```
-### Verification methods covered
+| # | Method | Target | Type |
+|---|--------|--------|------|
+| 2a | SHA256 | VirtualBox installer | Manual |
+| 2b | SHA256 | Ubuntu ISO (SHA256SUMS) | Automatic |
+| 2c | GPG | Ubuntu SHA256SUMS signature | Cryptographic |
 
-```markdown
-1. Manual
-
-VirtualBox installer (website hash)  
-
-2. Automatic
-
-Ubuntu ISO (SHA256SUMS)  
-
-3. Optional
-
-Ubuntu checksum signature (GPG)  
-```
 ---
 
-### 📦 Step 2a: Manual Verification (VirtualBox Installer)
+### 📦 Step 2a: VirtualBox Installer — SHA256 (Manual)
 
 <details>
 <summary><strong>Open Step 2a</strong></summary>
 
-### Official Page
+**Source**: https://www.virtualbox.org/wiki/Downloads
 
-**VBox Download & Checksums**: https://www.virtualbox.org/wiki/Downloads
+**Purpose**: Confirm the VirtualBox installer matches the official hash 
+listed on the download page.
 
-### Purpose
-
+**Process**:
 ```md
-Verify VirtualBox (VBox) installer hash matches official checksum.
-Hash values must match exactly before installing.
+1. Compute installer hash locally
+2. Compare to hash listed on the VirtualBox download page
+3. Both values must match exactly
 ```
 
-### Process
-```md
-1. Compute installer hash locally  
-2. Compare to website value  
-3. Verify exact match  
-```
-### Choose Your System
-
-Click on your specific OS below to see tailored commands. Replace the VirtualBox example filename with your downloaded VBox file.
+> Replace filenames below with your downloaded VirtualBox file.
 
 <details>
 <summary>💻 Linux</summary>
 
 ```bash
+# Navigate to Downloads directory
+
 cd ~/Downloads
+
+# Compute SHA256 hash of the VirtualBox installer
+# Replace YOUR-FILENAME.run with your downloaded file
+
 sha256sum YOUR-FILENAME.run
+
+# Manually compare output against the hash listed on the VirtualBox download page
+# Both values must match exactly
 ```
-
-</details> <details> <summary>🍏 macOS</summary>
-
-```bash
-cd ~/Downloads
-shasum -a 256 YOUR-FILENAME.dmg
-```
-
-</details> <details> <summary>🪟 Windows (PowerShell)</summary>
-
-```powershell
-cd $env:USERPROFILE\Downloads
-Get-FileHash .\YOUR-FILENAME.exe -Algorithm SHA256
-```
-> :warning: Never bypass hash verification.
-> :warning: A mismatched hash or signature could indicate a malicious or corrupt file.
-> :warning: Only proceed when all verification steps pass.
 
 </details>
 
-If hashes do NOT match ➡️ delete installer, investigate and re-download from official site
+<details>
+<summary>🍏 macOS</summary>
+
+```bash
+# Navigate to Downloads directory
+
+cd ~/Downloads
+
+# Compute SHA256 hash of the VirtualBox installer
+# Replace YOUR-FILENAME.dmg with your downloaded file
+
+shasum -a 256 YOUR-FILENAME.dmg
+
+# Manually compare output against the hash listed on the VirtualBox download page
+# Both values must match exactly
+```
+
+</details>
+
+<details>
+<summary>🪟 Windows (PowerShell)</summary>
+
+```powershell
+# Navigate to Downloads directory
+
+cd $env:USERPROFILE\Downloads
+
+# Compute SHA256 hash of the VirtualBox installer
+# Replace YOUR-FILENAME.exe with your downloaded file
+
+$hash = (Get-FileHash .\YOUR-FILENAME.exe -Algorithm SHA256).Hash
+
+# Output the hash for manual comparison
+
+$hash
+
+# Manually compare output against the hash listed on the VirtualBox download page
+# Both values must match exactly
+```
+
+</details>
+
+> ⚠️ If hashes do not match — delete the installer and re-download 
+> from the official page. Do not proceed.
 
 </details>
 
 ---
 
-### 🐧 Step 2b: Automatic Verification (Ubuntu ISO)
+### 🐧 Step 2b: Ubuntu ISO — SHA256 (Automatic)
 
-<details> 
+<details>
 <summary><strong>Open Step 2b</strong></summary>
-    
-### Purpose
-Verify Ubuntu ISO matches official checksum list.
 
-## Process
+**Source**: https://releases.ubuntu.com/
 
-Run the checksum verification command to compare your ISO’s SHA256 hash
-against the official values listed in `SHA256SUMS`.
+**Purpose**: Confirm the Ubuntu ISO matches the official SHA256SUMS file.
 
-**Place both files in same folder**:
+**Before running commands, place both files in the same folder**:
 ```md
-Ubuntu ISO
-
-SHA256SUMS
+- ubuntu-XX.XX-desktop-amd64.iso
+- SHA256SUMS
 ```
 
-## Choose Your System
-
-<details> <summary>💻 Linux</summary>
-
-**Verify**
+<details>
+<summary>💻 Linux</summary>
 
 ```bash
+# Navigate to Downloads directory
+
 cd ~/Downloads
-sha256sum -c SHA256SUMS 2>&1 | grep OK
+
+# Verify ISO hash against SHA256SUMS
+# -c flag checks hashes listed in SHA256SUMS against local files
+# grep filters output to show both passing and failing results
+
+sha256sum -c SHA256SUMS 2>&1 | grep -E "OK|FAILED"
+
+# OK     = hash matches — ISO is verified
+# FAILED = hash mismatch — delete ISO and re-download from official source
 ```
 
-Expected Output: `ubuntu-24.04.1-desktop-amd64.iso: OK`
+Expected output:
+ubuntu-24.04.1-desktop-amd64.iso: OK
 
-Links:
+</details>
 
-Ubuntu Community: [HowToSHA256SUM](https://help.ubuntu.com/community/HowToSHA256SUM)
-
-GeeksforGeeks: [SHA-256 on Linux/Unix](https://www.geeksforgeeks.org/linux-unix/generating-an-sha-256-hash-from-the-command-line/)
-
-To generate a SHA-256 checksum: sha256sum filename
-To verify: sha256sum -c checksumfile
-The checksumfile should contain the expected hash followed by the filename.
-
-Linux man page: [sha256sum](https://www.linux.org/docs/man1/sha256sum.html)
-
--c, --check -> check SHA256 checksums from a file
-
-
-</details> <details> <summary>🍏 macOS</summary>
+<details>
+<summary>🍏 macOS</summary>
 
 ```bash
+# Navigate to Downloads directory
+
 cd ~/Downloads
-shasum -a 256 ubuntu-24.04.1-desktop-amd64.iso
-# Compare resulting hash with SHA256SUMS entry
+
+# Compute SHA256 hash of the Ubuntu ISO
+# Replace with your downloaded ISO filename
+
+shasum -a 256 ubuntu-XX.XX-desktop-amd64.iso
+
+# macOS does not reliably support automatic checksum verification
+# against Ubuntu's SHA256SUMS format
+# Manually compare the output hash against the matching entry in SHA256SUMS
 ```
 
-Compare the resulting hash with the value listed for the ISO in 'SHA256SUMS'.
+Compare the output hash against the matching entry in `SHA256SUMS`.
 
-</details> 
-<details> <summary>🪟 Windows (PowerShell)</summary>
+</details>
+
+<details>
+<summary>🪟 Windows (PowerShell)</summary>
 
 ```powershell
+# Navigate to Downloads directory
+
 cd $env:USERPROFILE\Downloads
+
+# Name of the ISO file to verify
+# Update this if your version differs from 24.04.1
 
 $iso = "ubuntu-24.04.1-desktop-amd64.iso"
 
+# Compute the SHA256 hash of the downloaded ISO
+
 $isoHash = (Get-FileHash $iso -Algorithm SHA256).Hash
-$officialHash = (Select-String $iso SHA256SUMS).Line.Split(" ")[0]
+
+# Extract the expected hash from the SHA256SUMS file
+# .Split() splits on any whitespace — handles both single and double space formatting
+
+$officialHash = (Select-String $iso SHA256SUMS).Line.Split()[0]
+
+# Compare computed hash against official value
 
 if ($isoHash -eq $officialHash) {
     "✔ Hash matches — ISO verified"
@@ -258,76 +307,130 @@ if ($isoHash -eq $officialHash) {
 }
 ```
 
-Expected Output: `✔ Hash matches — ISO verified`
+Expected output:
+✔ Hash matches — ISO verified
 
-> :warning: Never bypass hash verification.
-> :warning: A mismatched hash or signature could indicate a malicious or corrupt file.
-> :warning: Only proceed when all verification steps pass.
+</details>
 
-</details> </details>
+> ⚠️ If hashes do not match — delete the ISO and re-download 
+> from the official page. Do not proceed.
+
+</details>
 
 ---
 
-### 🔏 Step 2c: Verify Ubuntu Checksum Signature (GPG)
+### 🔏 Step 2c: Ubuntu SHA256SUMS — GPG Signature
 
-<details> <summary><strong>Open Step 2c</strong></summary>
+<details>
+<summary><strong>Open Step 2c</strong></summary>
 
-### **Purpose**
-- Verify SHA256SUMS file is authentic and signed by Ubuntu.
+**Source**: https://releases.ubuntu.com/
 
-## Why this matters
-```markdown
-- Prevents a malicious mirror from replacing both the ISO and checksum  
-- Confirms the checksums were published by Ubuntu developers  
-```
-## Files needed:
+**Purpose**: Confirm the SHA256SUMS file was signed by Ubuntu — 
+not replaced by a malicious mirror.
+
+**Why this matters**:
 ```md
-- `SHA256SUMS`
-
-- `SHA256SUMS.gpg`
+- A compromised mirror could replace both the ISO and its checksum
+- GPG verification confirms the checksums were published by Ubuntu developers
+- SHA256 alone cannot detect this — GPG is the final trust anchor
 ```
-### Choose Your System
-<details> <summary>💻 Linux / 🍏 macOS</summary>
+
+**Files needed** (both downloaded in Step 1):
+```md
+- SHA256SUMS
+- SHA256SUMS.gpg
+```
+
+<details>
+<summary>💻 Linux / 🍏 macOS</summary>
 
 ```bash
+# Verify the GPG signature of the SHA256SUMS file
+# SHA256SUMS.gpg is the detached signature file signed by Ubuntu
+# SHA256SUMS is the file being verified
+# --keyid-format long displays the full key ID for manual cross-reference
+# against Ubuntu's official published signing key if needed
+
+# macOS requires GPG — install via Homebrew if not present: brew install gnupg
+
 gpg --keyid-format long --verify SHA256SUMS.gpg SHA256SUMS
+
+# Expected output: Good signature from "Ubuntu CD Image Automatic Signing Key"
+# BAD signature   = do not proceed — delete all files, verify, and re-download
 ```
 
-Expected Output: `"Good signature from "Ubuntu CD Image Automatic Signing Key"`
+</details>
 
-</details> <details> <summary>🪟 Windows (PowerShell)</summary>
+<details>
+<summary>🪟 Windows (PowerShell)</summary>
+
+Requires **Gpg4win**: https://www.gpg4win.org/
 
 ```bash
-# Windows requires Gpg4win
-gpg --verify SHA256SUMS.gpg SHA256SUMS
-```
-You may need to install Gpg4win which provides the gpg command, if you dont have it installed already.
 
-Expected Output:
-```bash
-Good signature from "Ubuntu CD Image Automatic Signing Key"
+# Verify the GPG signature of the SHA256SUMS file
+# SHA256SUMS.gpg is the detached signature file signed by Ubuntu
+# SHA256SUMS is the file being verified
+# --keyid-format long displays the full key ID for manual cross-reference
+# against Ubuntu's official published signing key if needed
+
+gpg --keyid-format long --verify SHA256SUMS.gpg SHA256SUMS
+
+# Expected output: Good signature from "Ubuntu CD Image Automatic Signing Key"
+# BAD signature   = do not proceed — delete all files and re-download
 ```
 </details>
 
-```md
-⚠️ First-time trust warning is normal.
+---
+
+### ⚠️ First-Time Trust Warning
 
 You may see:
+WARNING: This key is not certified with a trusted signature
 
-`WARNING: This key is not certified with a trusted signature`
+This is **normal** on first use and does **not** indicate a bad signature.
 
-This does **not** indicate a bad signature.
+```md
+GPG distinguishes between:
 
-It means your local GPG keyring has not yet assigned trust to the Ubuntu signing key.
-
-GPG separates:
-
-- **Signature validity** ➡️ cryptographically correct  
-- **Key trust** ➡️ whether you personally trust the signer
+- Signature validity  ➡️ cryptographically correct (this is what matters)
+- Key trust          ➡️ whether you have personally verified the signer
 ```
-> :warning: Never bypass hash verification.
-> :warning: A mismatched hash or signature could indicate a malicious or corrupt file.
-> :warning: Only proceed when all verification steps pass.
+
+The signature is valid as long as the output reads **"Good signature"**.
+
+> ⚠️ If the output reads "BAD signature" — do not proceed. 
+> Delete all files and re-download from the official source.
+
+</details>
+
+</details>
+
+---
+
+## ✅ Step 3: Verification Checklist
+
+<details>
+<summary><strong>Open Checklist</strong></summary>
+
+**VirtualBox**
+- [ ] Installer downloaded from https://www.virtualbox.org/wiki/Downloads
+- [ ] SHA256 hash matches official value on download page
+
+**Ubuntu**
+- [ ] ISO downloaded from https://releases.ubuntu.com/
+- [ ] SHA256SUMS downloaded from https://releases.ubuntu.com/
+- [ ] SHA256SUMS.gpg downloaded from https://releases.ubuntu.com/
+- [ ] ISO SHA256 hash verified against SHA256SUMS
+- [ ] GPG signature reports "Good signature"
+
+**Final Check**
+- [ ] No hash mismatches
+- [ ] No unexpected errors or warnings
+
+> 🛑 If any item is unchecked — do not proceed. 
+> Delete affected files and re-download from the official source.
 
 </details>
 
@@ -338,106 +441,60 @@ GPG separates:
 <details>
 <summary><strong>Open Check</strong></summary>
 
-### An ISO is considered trustworthy only if:
+All of the following must be true before installing:
 
 ```md
-- Downloaded directly from the official distribution site  
-- Cryptographic hash matches the official checksum list  
-- Verification reports success with no warnings or errors
-- Download performed over HTTPS from the official vendor domain
-- GPG signature verification reports "Good Signature" 
+✅ VirtualBox installer hash matches the official download page value
+✅ Ubuntu ISO hash matches the SHA256SUMS file
+✅ GPG signature reports "Good signature"
+✅ All downloads sourced directly from official vendor domains over HTTPS
 
-✅ Result: authenticity and integrity verified  
-
-❗ Failure of any check indicates possible corruption or malicious alteration  
-Abort installation and obtain a fresh copy from the official source.
+❗ Failure of any check = possible corruption or compromise
+   Delete affected files and re-download from the official source.
 ```
 
 ---
 
-### By now you have obtained and verified the following:
+### Ubuntu ISO — Usage Note
 ```md
-1. VirtualBox installer  
-2. Ubuntu ISO  
-3. GPG signature (optional)  
-```
-🛑 Only proceed if all hashes match official values.
-
----
-
-### VirtualBox Installer Files per Platform/OS
-```md
-Windows → `.exe`  
-macOS → `.dmg`  
-Linux → `.run` or package manager  
+- The ISO is not installed directly
+- Attach it as boot media inside VirtualBox
+- No extraction needed
 ```
 
 ---
 
-### Ubuntu ISO File Use
+### Security Reminders 💭
 ```md
-- ISO is not installed directly  
-- Attach as boot media in VirtualBox  
-- No extraction needed  
+1. Never install unverified software
+2. Never ignore hash mismatches
+3. Delete and re-download from the official page if verification fails
 ```
 
----
-
-### Security Thoughts 💭
-```md
-1. Never install unverified downloads  
-2. Never ignore hash mismatches  
-3. Delete & re-download from official page if verification fails  
-```
+> 🔐 **VirusTotal** can scan files and hashes across multiple AV engines 
+> as a supplementary check: https://www.virustotal.com  
+> Note: VirusTotal does not replace GPG verification and cannot detect 
+> zero-day or unknown threats.
 
 </details>
 
 ---
 
-## ✅ Step 3: Verification Checklist
-<details> <summary><strong>✅ Open Checklist</strong></summary>   
-  
-- [ ] VirtualBox installer downloaded  
-- [ ] VirtualBox SHA256 verified  
-- [ ] Ubuntu ISO downloaded  
-- [ ] Ubuntu ISO SHA256 verified  
-- [ ] SHA256SUMS signature verified (optional)  
-- [ ] All files match official checksums  
-- [ ] GPG signature valid  
-- [ ] No warnings or errors
+## 🔖 References
 
-> 🛑 If any item is unchecked, do not proceed. Delete affected files and re-download. 🛑
+<details>
+<summary><strong>Open References</strong></summary>
 
-</details>
-
----
-
-## 🔖 Links
-<details> <summary><strong>🔖 Open Links</strong></summary>    
-
-    
-1. [Ubuntu Image Verification Guide](https://ubuntu.com/tutorials/how-to-verify-ubuntu#1-overview)
-
-2. [Ubuntu Image Verification Guide for GPG](https://ubuntu.com/tutorials/how-to-verify-ubuntu#4-retrieve-the-correct-signature-key)
-
-3. [VirtualBox Security & Verification](https://www.virtualbox.org/manual/topics/Security.html)
-
-4. [Linux Security](https://linuxsecurity.com/features/what-are-checksums-why-should-you-be-using-them)
-
-5. [Generate a Hash From CLI](https://www.geeksforgeeks.org/linux-unix/generating-an-sha-256-hash-from-the-command-line/)
-
-
->
-> 🔐 VirusTotal scans files, URLS, and hashes across multiple AV engines for known threats:
-> https://www.virustotal.com/gui/home/url
-> VT can not detect zero-day attacks or unknown threats.
-> Always use caution when installing files, clicking links, or verifying hashes.
+**Official Sources**
+1. [Ubuntu — How to Verify Your Ubuntu Download](https://ubuntu.com/tutorials/how-to-verify-ubuntu#1-overview)
+2. [Ubuntu — GPG Signature Verification](https://ubuntu.com/tutorials/how-to-verify-ubuntu#4-retrieve-the-correct-signature-key)
+3. [Ubuntu — SHA256SUMS](https://help.ubuntu.com/community/HowToSHA256SUM)
+4. [VirtualBox — Security Documentation](https://www.virtualbox.org/manual/topics/Security.html)
+5. [VirtualBox — Downloads](https://www.virtualbox.org/wiki/Downloads)
 
 
 </details>
 
 ---
 
-## Thank You!
-
----
+## Good Luck!
