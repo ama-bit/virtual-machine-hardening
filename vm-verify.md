@@ -152,8 +152,17 @@ listed on the download page.
 <summary>💻 Linux</summary>
 
 ```bash
+# Navigate to Downloads directory
+
 cd ~/Downloads
+
+# Compute SHA256 hash of the VirtualBox installer
+# Replace YOUR-FILENAME.run with your downloaded file
+
 sha256sum YOUR-FILENAME.run
+
+# Manually compare output against the hash listed on the VirtualBox download page
+# Both values must match exactly
 ```
 
 </details>
@@ -162,8 +171,17 @@ sha256sum YOUR-FILENAME.run
 <summary>🍏 macOS</summary>
 
 ```bash
+# Navigate to Downloads directory
+
 cd ~/Downloads
+
+# Compute SHA256 hash of the VirtualBox installer
+# Replace YOUR-FILENAME.dmg with your downloaded file
+
 shasum -a 256 YOUR-FILENAME.dmg
+
+# Manually compare output against the hash listed on the VirtualBox download page
+# Both values must match exactly
 ```
 
 </details>
@@ -172,8 +190,21 @@ shasum -a 256 YOUR-FILENAME.dmg
 <summary>🪟 Windows (PowerShell)</summary>
 
 ```powershell
+# Navigate to Downloads directory
+
 cd $env:USERPROFILE\Downloads
-Get-FileHash .\YOUR-FILENAME.exe -Algorithm SHA256
+
+# Compute SHA256 hash of the VirtualBox installer
+# Replace YOUR-FILENAME.exe with your downloaded file
+
+$hash = (Get-FileHash .\YOUR-FILENAME.exe -Algorithm SHA256).Hash
+
+# Output the hash for manual comparison
+
+$hash
+
+# Manually compare output against the hash listed on the VirtualBox download page
+# Both values must match exactly
 ```
 
 </details>
@@ -204,8 +235,18 @@ Get-FileHash .\YOUR-FILENAME.exe -Algorithm SHA256
 <summary>💻 Linux</summary>
 
 ```bash
+# Navigate to Downloads directory
+
 cd ~/Downloads
-sha256sum -c SHA256SUMS 2>&1 | grep OK
+
+# Verify ISO hash against SHA256SUMS
+# -c flag checks hashes listed in SHA256SUMS against local files
+# grep filters output to show both passing and failing results
+
+sha256sum -c SHA256SUMS 2>&1 | grep -E "OK|FAILED"
+
+# OK     = hash matches — ISO is verified
+# FAILED = hash mismatch — delete ISO and re-download from official source
 ```
 
 Expected output:
@@ -217,8 +258,18 @@ ubuntu-24.04.1-desktop-amd64.iso: OK
 <summary>🍏 macOS</summary>
 
 ```bash
+# Navigate to Downloads directory
+
 cd ~/Downloads
-shasum -a 256 ubuntu-24.04.1-desktop-amd64.iso
+
+# Compute SHA256 hash of the Ubuntu ISO
+# Replace with your downloaded ISO filename
+
+shasum -a 256 ubuntu-XX.XX-desktop-amd64.iso
+
+# macOS does not reliably support automatic checksum verification
+# against Ubuntu's SHA256SUMS format
+# Manually compare the output hash against the matching entry in SHA256SUMS
 ```
 
 Compare the output hash against the matching entry in `SHA256SUMS`.
@@ -229,11 +280,25 @@ Compare the output hash against the matching entry in `SHA256SUMS`.
 <summary>🪟 Windows (PowerShell)</summary>
 
 ```powershell
+# Navigate to Downloads directory
+
 cd $env:USERPROFILE\Downloads
 
+# Name of the ISO file to verify
+# Update this if your version differs from 24.04.1
+
 $iso = "ubuntu-24.04.1-desktop-amd64.iso"
+
+# Compute the SHA256 hash of the downloaded ISO
+
 $isoHash = (Get-FileHash $iso -Algorithm SHA256).Hash
-$officialHash = (Select-String $iso SHA256SUMS).Line.Split(" ")[0]
+
+# Extract the expected hash from the SHA256SUMS file
+# .Split() splits on any whitespace — handles both single and double space formatting
+
+$officialHash = (Select-String $iso SHA256SUMS).Line.Split()[0]
+
+# Compare computed hash against official value
 
 if ($isoHash -eq $officialHash) {
     "✔ Hash matches — ISO verified"
@@ -281,11 +346,19 @@ not replaced by a malicious mirror.
 <summary>💻 Linux / 🍏 macOS</summary>
 
 ```bash
-gpg --keyid-format long --verify SHA256SUMS.gpg SHA256SUMS
-```
+# Verify the GPG signature of the SHA256SUMS file
+# SHA256SUMS.gpg is the detached signature file signed by Ubuntu
+# SHA256SUMS is the file being verified
+# --keyid-format long displays the full key ID for manual cross-reference
+# against Ubuntu's official published signing key if needed
 
-Expected output:
-Good signature from "Ubuntu CD Image Automatic Signing Key"
+# macOS requires GPG — install via Homebrew if not present: brew install gnupg
+
+gpg --keyid-format long --verify SHA256SUMS.gpg SHA256SUMS
+
+# Expected output: Good signature from "Ubuntu CD Image Automatic Signing Key"
+# BAD signature   = do not proceed — delete all files, verify, and re-download
+```
 
 </details>
 
@@ -295,12 +368,18 @@ Good signature from "Ubuntu CD Image Automatic Signing Key"
 Requires **Gpg4win**: https://www.gpg4win.org/
 
 ```bash
-gpg --verify SHA256SUMS.gpg SHA256SUMS
+
+# Verify the GPG signature of the SHA256SUMS file
+# SHA256SUMS.gpg is the detached signature file signed by Ubuntu
+# SHA256SUMS is the file being verified
+# --keyid-format long displays the full key ID for manual cross-reference
+# against Ubuntu's official published signing key if needed
+
+gpg --keyid-format long --verify SHA256SUMS.gpg SHA256SUMS
+
+# Expected output: Good signature from "Ubuntu CD Image Automatic Signing Key"
+# BAD signature   = do not proceed — delete all files and re-download
 ```
-
-Expected output:
-Good signature from "Ubuntu CD Image Automatic Signing Key"
-
 </details>
 
 ---
