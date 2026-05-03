@@ -1,19 +1,25 @@
 # Virtual Machine Install & Harden 🛡️
 
-Set up and harden an **Ubuntu** virtual machine (VM) in **VirtualBox** with secure 
-defaults, including VM creation, installation, and basic post-install security.
+Set up and harden an **Ubuntu** virtual machine (VM) in **VirtualBox** with secure
+defaults, including VM creation, installation, and post-install security hardening.
+
+> **Tested on:** Ubuntu 24.04 LTS · VirtualBox 7.x · Host platforms: Linux, macOS, Windows
+>
+> **Status key used throughout this guide:**
+> - ✅ *Tested* — verified hands-on during authorship
+> - 📖 *Researched* — sourced from official documentation; not personally verified on every platform
 
 ---
 
 ## Scope
 
 **This Guide**
-```md
+```
 Create VM ➡️ Install Ubuntu ➡️ Harden OS ➡️ Harden VirtualBox ➡️ Verify & Maintain
 ```
 
 **Previous Guide**
-```md
+```
 Download ➡️ Verify SHA256 (Integrity) ➡️ Verify GPG Signature (Authenticity)
 ```
 
@@ -29,7 +35,7 @@ Download ➡️ Verify SHA256 (Integrity) ➡️ Verify GPG Signature (Authentic
 | Terminal / PowerShell | Runs hardening and verification commands |
 
 💡 *Supported host platforms:*
-```md
+```
 💻 Linux  
 🍏 macOS  
 🪟 Windows (PowerShell)
@@ -39,13 +45,25 @@ Download ➡️ Verify SHA256 (Integrity) ➡️ Verify GPG Signature (Authentic
 
 ## Threat Model
 
-This guide addresses the following threats:
+This guide addresses the following threats and the controls that mitigate them.
 
-1. Running unverified or compromised installation media
-2. Weak default OS configuration post-install
-3. Guest-to-host escape via shared resources
-4. Unauthorized access through open ports or services
-5. Persistence of a compromised state without rollback capability
+Understanding *why* a control exists matters as much as *how* to apply it — that's
+what separates a hardened system from one that just ran a checklist.
+
+| # | Threat | Controls That Address It |
+|---|--------|--------------------------|
+| 1 | Running unverified or compromised installation media | ISO verification (prior guide); Step 2 warning to not skip verification |
+| 2 | Weak default OS configuration post-install | Step 3: UFW, root lock, auto-updates, AppArmor |
+| 3 | Guest-to-host escape via shared resources | Step 4: Disable clipboard, drag-and-drop, shared folders, USB |
+| 4 | Unauthorized access through open ports or services | Step 3b (UFW), Step 3f (disable unused services), Step 3i (SSH hardening) |
+| 5 | Persistence of a compromised state without rollback | Step 4e: Snapshot strategy |
+
+**Why each guest-isolation control matters (Threat 3 in depth):**
+
+- **Shared clipboard** creates a bidirectional data channel between guest and host. If the guest is compromised, this becomes an exfiltration or injection path — malware in the guest can read from or write to the host's clipboard without any additional privilege escalation.
+- **Drag-and-drop** operates similarly — it's a file transfer channel that bypasses network controls entirely. An attacker with guest access could use it to stage files on the host.
+- **Shared folders** mount a host filesystem path inside the guest. Any process in the guest — including malware — that has filesystem access can read, modify, or delete files on the host through that mount.
+- **USB passthrough** grants the guest direct access to physical USB devices. A compromised guest could interact with USB storage, firmware, or HID devices on the host.
 
 This guide does **not** address:
 - Network-level threats external to the VM host
@@ -77,10 +95,10 @@ Create a new virtual machine in VirtualBox and attach the verified Ubuntu ISO as
 | RAM | 4 GB | 8 GB |
 | Disk | 25 GB | 50 GB |
 | Display | 16 MB VRAM | 32 MB VRAM |
-| Network | NAT | Host-Only (see Step 4) |
+| Network | NAT | Host-Only (see Step 4c) |
 
-> 📓 These specs are for Ubuntu 24.04 LTS desktop. Adjust based on your 
-> host machine's available resources.
+> 📓 These specs target Ubuntu 24.04 LTS desktop. Adjust based on your host machine's
+> available resources. Server installs can run on significantly less RAM.
 
 ---
 
@@ -89,7 +107,9 @@ Create a new virtual machine in VirtualBox and attach the verified Ubuntu ISO as
 <details>
 <summary><strong>VirtualBox GUI</strong></summary>
 
-```md
+✅ *Tested*
+
+```
 1. Open VirtualBox → Click "New"
 2. Name your VM (e.g. "Ubuntu-24.04")
 3. Set Type: Linux | Version: Ubuntu (64-bit)
@@ -107,7 +127,7 @@ Create a new virtual machine in VirtualBox and attach the verified Ubuntu ISO as
 
 **Attach the verified Ubuntu ISO:**
 
-```md
+```
 1. Select your VM → Click "Settings"
 2. Navigate to Storage
 3. Under Controller: IDE → Click the empty disk icon
@@ -134,6 +154,8 @@ Create a new virtual machine in VirtualBox and attach the verified Ubuntu ISO as
 
 <details>
 <summary>💻 Linux</summary>
+
+✅ *Tested*
 
 ```bash
 # Create the VM directory first if it does not exist
@@ -173,6 +195,8 @@ VBoxManage modifyvm "Ubuntu-24.04" --boot1 dvd --boot2 disk --boot3 none --boot4
 <details>
 <summary>🍏 macOS</summary>
 
+📖 *Researched — commands mirror Linux; paths differ*
+
 ```bash
 # Create the VM directory first if it does not exist
 mkdir -p ~/VirtualBox\ VMs/Ubuntu-24.04/
@@ -210,6 +234,8 @@ VBoxManage modifyvm "Ubuntu-24.04" --boot1 dvd --boot2 disk --boot3 none --boot4
 
 <details>
 <summary>🪟 Windows (PowerShell)</summary>
+
+📖 *Researched — see Known Limitations note below*
 
 ```powershell
 # Create the VM
@@ -291,7 +317,9 @@ Install Ubuntu inside the VM using the verified ISO attached in Step 1.
 <details>
 <summary><strong>VirtualBox GUI</strong></summary>
 
-```md
+✅ *Tested*
+
+```
 1. Select your VM in VirtualBox → Click "Start"
 2. Ubuntu installer will boot from the attached ISO
 3. Select "Try or Install Ubuntu"
@@ -300,19 +328,22 @@ Install Ubuntu inside the VM using the verified ISO attached in Step 1.
 <!-- 📸 SCREENSHOT NEEDED: Ubuntu installer welcome screen
      Show: "Try or Install Ubuntu" option highlighted -->
 
-```md
+```
 4. Choose your language and keyboard layout
 5. Select "Install Ubuntu"
 6. Installation type:
    - Select "Erase disk and install Ubuntu"
    - Click "Advanced features" to access:
-     - LVM (flexible disk management)
-     - LVM with encryption (LUKS) — recommended if your threat model requires it
+     - LVM (flexible disk management — allows resizing volumes later without reinstalling)
+     - LVM with encryption (LUKS) — encrypts the virtual disk at rest; recommended if
+       the VM will hold sensitive data or the host machine is shared or portable
 7. Set your timezone
 8. Create your user account:
    - Use a strong password
    - Enable "Require password to log in"
    - Do not enable auto-login
+       ↳ Auto-login bypasses authentication entirely. If the host is left unattended
+         with the VM running, anyone with physical access can open the VM without a password.
 9. Complete installation and restart when prompted
 10. Remove ISO when prompted or via Settings → Storage
 ```
@@ -335,6 +366,10 @@ Install Ubuntu inside the VM using the verified ISO attached in Step 1.
 
 > ❗ Do not install from an unverified ISO.
 > If you skipped vm-verify.md, complete verification before proceeding.
+>
+> Reason: An unverified ISO could be corrupted or tampered with. The verification
+> step in the prior guide confirms both integrity (SHA256) and authenticity (GPG).
+> Skipping it means you cannot trust the foundation everything else is built on.
 
 </details>
 
@@ -344,7 +379,7 @@ Install Ubuntu inside the VM using the verified ISO attached in Step 1.
 
 After installation and restart:
 
-```md
+```
 1. VirtualBox will boot from the virtual hard disk
 2. Log in with the credentials created during installation
 3. Confirm Ubuntu loads correctly before proceeding to hardening
@@ -365,9 +400,14 @@ After installation and restart:
 ### Purpose
 Apply essential security configurations to Ubuntu after installation.
 
+Ubuntu ships with reasonable defaults, but "reasonable defaults" are designed for broad
+compatibility — not for security. Each step below closes a specific gap.
+
 ---
 
 ### 3a: Update System
+
+✅ *Tested*
 
 ```bash
 # Update package lists and upgrade all installed packages
@@ -377,9 +417,14 @@ sudo apt update && sudo apt upgrade -y
 sudo apt autoremove -y
 ```
 
+> 📓 Many exploits target known vulnerabilities in unpatched software. Running updates
+> immediately after install ensures you are not starting from an already-outdated baseline.
+
 ---
 
 ### 3b: Enable Firewall (UFW)
+
+✅ *Tested*
 
 ```bash
 # Install UFW if not already present
@@ -399,12 +444,18 @@ sudo ufw enable
 sudo ufw status verbose
 ```
 
-> 📓 Only open ports you explicitly need.
-> Every open port increases attack surface.
+> 📓 UFW is a frontend for iptables. The default policy here is deny-by-default on inbound,
+> which means no port is reachable unless you explicitly open it. This is the correct posture
+> for a VM that isn't intentionally running services.
+>
+> Every open port is a potential entry point. Only open what you explicitly need —
+> not what might be convenient later.
 
 ---
 
 ### 3c: Disable Root Login
+
+✅ *Tested*
 
 ```bash
 # Lock the root account — sudo user created during install is sufficient
@@ -415,9 +466,19 @@ sudo passwd -S root
 # Expected output: root L (locked)
 ```
 
+> 📓 Ubuntu creates a sudo-capable user during install and locks root by default,
+> but it's worth explicitly confirming and enforcing this.
+>
+> Why it matters: a locked root account means that even if an attacker gains a
+> foothold in the system, they cannot escalate by simply switching to root —
+> they still need to know your sudo user's password and abuse a privilege
+> escalation path. It narrows the attack surface on that escalation step.
+
 ---
 
 ### 3d: Automatic Security Updates
+
+✅ *Tested*
 
 ```bash
 # Install unattended-upgrades
@@ -427,9 +488,16 @@ sudo apt install unattended-upgrades -y
 sudo dpkg-reconfigure --priority=low unattended-upgrades
 ```
 
+> 📓 Security patches are only useful if they're applied. Unattended-upgrades handles
+> security updates specifically (not major version upgrades) — it applies patches
+> without requiring manual intervention. For a VM you might not log into frequently,
+> this is especially important.
+
 ---
 
 ### 3e: Verify Sudo User
+
+✅ *Tested*
 
 ```bash
 # Confirm your user has sudo access
@@ -444,18 +512,23 @@ whoami
 
 ### 3f: Disable Unused Services — Optional
 
-Reducing running services reduces attack surface.
-Only disable services you do not need.
+📖 *Researched — verify behavior for your specific setup before disabling*
+
+Reducing running services reduces attack surface. Every running service is code that
+could contain vulnerabilities, and code that isn't running can't be exploited.
+
+**When to apply this step:** If the VM is long-lived, networked, or holds sensitive data.
+Skip this step if the VM is short-lived or isolated and you don't want the maintenance overhead.
 
 **Commonly safe to disable in a VM context:**
 
 | Service | What it does | Disable if... |
 |---------|-------------|---------------|
-| bluetooth | Bluetooth support | No Bluetooth hardware or use |
+| bluetooth | Bluetooth support | No Bluetooth hardware or use — VMs typically have no BT hardware |
 | cups | Printing service | No printing needed |
-| avahi-daemon | Network discovery (mDNS) | No local network discovery needed |
+| avahi-daemon | Network discovery (mDNS) | No local network discovery needed; also reduces network fingerprint |
 | ModemManager | Mobile broadband management | No modem attached |
-| snapd | Snap package manager | Not using Snap packages — verify no dependencies first |
+| snapd | Snap package manager | Not using Snap packages — **verify no dependencies first on Ubuntu 24.04** |
 
 ```bash
 # List all running services
@@ -483,8 +556,14 @@ systemctl is-active SERVICE
 
 ### 3g: Verify AppArmor is Active
 
-AppArmor ships with Ubuntu and enforces mandatory access controls on applications.
-It should be active by default — this step confirms it.
+✅ *Tested*
+
+AppArmor ships with Ubuntu and enforces mandatory access controls (MAC) on applications.
+It limits what a given process can do — even if that process is exploited — by defining
+a profile of allowed behaviors (files it can read, syscalls it can make, etc.).
+This provides a layer of containment that operates independently of standard Unix permissions.
+
+AppArmor should be active by default; this step confirms it.
 
 ```bash
 # Check AppArmor status
@@ -499,11 +578,22 @@ sudo systemctl enable apparmor
 sudo systemctl start apparmor
 ```
 
+> 📓 "Complain mode" logs violations but does not block them — it's useful for
+> developing new profiles but provides no actual protection. Ensure profiles
+> show `enforce` mode, not `complain`.
+
 ---
 
 ### 3h: Kernel Hardening (sysctl) — Optional
 
-Apply kernel-level security parameters to reduce attack surface.
+📖 *Researched — parameters sourced from official kernel documentation and established hardening guides*
+
+Apply kernel-level security parameters to reduce attack surface at the OS level.
+These settings affect how the kernel handles networking, memory, and process information.
+
+**When to apply this step:** If the VM is networked, exposed to untrusted input,
+or is part of a higher-security environment. Safe to skip for an isolated dev VM
+with no network exposure.
 
 > ⚠️ Understand each parameter before applying.
 > Some settings may affect VM functionality depending on your use case.
@@ -515,25 +605,32 @@ sysctl net.ipv4.ip_forward
 # Apply hardening parameters
 sudo tee /etc/sysctl.d/99-hardening.conf <<EOF
 # Disable IP forwarding — not needed for a standard desktop VM
+# Without this, a compromised VM could be used to route traffic between networks
 net.ipv4.ip_forward = 0
 
-# Disable ICMP redirects — prevents route manipulation
+# Disable ICMP redirects — prevents an attacker from manipulating routing tables
+# via forged ICMP redirect messages
 net.ipv4.conf.all.accept_redirects = 0
 net.ipv4.conf.default.accept_redirects = 0
 
-# Ignore ICMP broadcast requests
+# Ignore ICMP broadcast requests — reduces amplification attack participation
 net.ipv4.icmp_echo_ignore_broadcasts = 1
 
-# Enable SYN flood protection
+# Enable SYN flood protection via SYN cookies
+# Mitigates DoS attacks that exhaust the TCP connection table
 net.ipv4.tcp_syncookies = 1
 
-# Restrict kernel pointer exposure
+# Restrict kernel pointer exposure to root only
+# Prevents unprivileged processes from reading kernel memory addresses,
+# which are useful to attackers writing kernel exploits
 kernel.kptr_restrict = 2
 
 # Restrict dmesg access to root only
+# dmesg can leak kernel addresses and hardware info useful for exploit development
 kernel.dmesg_restrict = 1
 
 # Disable core dumps for setuid programs
+# Prevents sensitive memory from being written to disk if a setuid program crashes
 fs.suid_dumpable = 0
 EOF
 
@@ -551,8 +648,13 @@ sudo sysctl --system
 
 ### 3i: SSH Hardening — Optional
 
-Apply only if SSH access to the VM is needed.
-If SSH is not required, skip this step and ensure port 22 remains closed in UFW.
+📖 *Researched — apply only if SSH access to the VM is actually needed*
+
+**When to apply this step:** Only if you need remote access to the VM over SSH.
+If SSH is not required, skip this step entirely and confirm port 22 is closed in UFW.
+
+Opening SSH when you don't need it is unnecessary attack surface. If you do need it,
+the defaults are insecure and must be hardened.
 
 ```bash
 # Confirm SSH is installed
@@ -572,15 +674,21 @@ sudo nano /etc/ssh/sshd_config
 
 ```
 # Disable root login via SSH
+# Even with a strong password, root login over SSH is a direct path to full
+# system compromise if credentials are leaked or brute-forced
 PermitRootLogin no
 
 # Disable password authentication — use key-based auth only
+# Password auth is vulnerable to brute force; key-based auth is not
+# (assuming the private key is protected)
 PasswordAuthentication no
 
 # Limit SSH to specific user (replace USERNAME)
+# Reduces attack surface to one account instead of any valid system user
 AllowUsers USERNAME
 
 # Set idle timeout — disconnect after 5 minutes of inactivity
+# Prevents unattended authenticated sessions from remaining open
 ClientAliveInterval 300
 ClientAliveCountMax 0
 ```
@@ -597,13 +705,18 @@ sudo ufw allow ssh
 ```
 
 > ⚠️ If you disable password authentication, ensure your SSH key is
-> configured before restarting SSH or you will lose access.
+> configured and tested before restarting SSH — locking yourself out
+> requires console access to recover.
 
 ---
 
 ### 3j: Audit Logging — Optional
 
-Enable basic audit logging to track system events and detect suspicious activity.
+📖 *Researched*
+
+**When to apply this step:** If you need a record of system events for security review,
+compliance, or incident investigation. Adds log overhead — not necessary for a
+short-lived or isolated VM.
 
 ```bash
 # Install auditd
@@ -640,12 +753,24 @@ sudo aureport --start today
 ### Purpose
 Reduce the attack surface between the VM guest and the host machine.
 
+VirtualBox provides a hypervisor boundary between guest and host, but that boundary
+is only as strong as the features you leave disabled. Every shared resource —
+clipboard, USB, folders, network — is a potential channel for data or code to
+cross that boundary. This step closes those channels.
+
 ---
 
 ### 4a: Disable Shared Clipboard and Drag-and-Drop
 
+✅ *Tested*
+
+**Why:** Shared clipboard creates a bidirectional channel between guest and host.
+Drag-and-drop is effectively a file transfer mechanism. Both bypass network controls
+and can be abused by a compromised guest to exfiltrate data or stage files on the host.
+If you don't need them, disable them — the risk is not theoretical.
+
 **GUI:**
-```md
+```
 Settings → General → Advanced
 - Shared Clipboard: Disabled
 - Drag'n'Drop: Disabled
@@ -664,8 +789,15 @@ VBoxManage modifyvm "Ubuntu-24.04" --drag-and-drop disabled
 
 ### 4b: Disable Shared Folders
 
+✅ *Tested*
+
+**Why:** A shared folder mounts a host path inside the guest. Any process running in the
+guest — including malware — with access to the filesystem can read, modify, or delete
+files on the host through that mount point. This is one of the most significant
+guest-to-host attack surfaces in a VM setup.
+
 **GUI:**
-```md
+```
 Settings → Shared Folders
 - Remove any shared folder entries unless explicitly required
 ```
@@ -683,35 +815,35 @@ VBoxManage sharedfolder remove "Ubuntu-24.04" --name "FOLDER-NAME"
 
 ### 4c: Configure Network Isolation
 
-Choose the network mode that matches your use case and threat model.
+✅ *Tested (NAT, Host-Only, Not Attached)* · 📖 *Researched (NAT Network, Internal, Bridged)*
 
-**Network Mode Overview**
+Choose the network mode that matches your use case. The principle is minimum necessary
+access — don't give the VM more network exposure than the task requires.
 
-| Mode | Internet | Host Access | VM-to-VM | Use Case |
-|------|----------|-------------|----------|----------|
-| NAT | ✅ | ❌ | ❌ | General use, outbound internet needed |
-| NAT Network | ✅ | ❌ | ✅ | Multi-VM setups needing internet |
-| Host-Only | ❌ | ✅ | ✅ | Development, host communication needed |
-| Internal Network | ❌ | ❌ | ✅ | Isolated lab, VM-to-VM only |
-| Not Attached | ❌ | ❌ | ❌ | Full isolation, no network needed |
-| Bridged | ✅ | ✅ | ✅ | ⚠️ VM exposed to physical network — not recommended for hardened setups |
+**Network Mode Comparison**
 
-> 📓 For most hardened setups, **Host-Only** or **Not Attached** are preferred.
-> Use the minimum network access your use case requires.
-> Bridged mode exposes the VM directly to your physical network and
-> should be avoided unless explicitly required.
+| Mode | Internet | Host Access | VM-to-VM | Use Case | When to Choose |
+|------|----------|-------------|----------|----------|----------------|
+| NAT | ✅ | ❌ | ❌ | General use, outbound internet needed | Default safe choice when internet access is required |
+| NAT Network | ✅ | ❌ | ✅ | Multi-VM setups needing internet | Multiple VMs that need to communicate and reach the internet |
+| Host-Only | ❌ | ✅ | ✅ | Development, host communication needed | Local dev/testing where internet isn't needed but host access is |
+| Internal Network | ❌ | ❌ | ✅ | Isolated lab, VM-to-VM only | Simulating a network without exposing anything to the host |
+| Not Attached | ❌ | ❌ | ❌ | Full isolation | Analysis of untrusted software; no network needed at all |
+| Bridged | ✅ | ✅ | ✅ | ⚠️ VM exposed to physical network | Avoid unless explicitly required — VM is treated as a full network peer |
 
----
+> 📓 **For most hardened setups:** use **Host-Only** or **Not Attached**.
+>
+> NAT is the VirtualBox default and is a reasonable starting point, but it still
+> provides internet access. If your use case doesn't require internet, Not Attached
+> is the most secure option.
+>
+> Bridged mode places the VM directly on your physical network, where it is visible
+> to other devices and subject to the same threats as any physical machine on that network.
+> Avoid it for hardened or sensitive workloads.
 
 **GUI (All Platforms):**
-```md
-Settings → Network → Adapter 1 → Attached to:
-- NAT
-- NAT Network
-- Host-Only Adapter
-- Internal Network
-- Not Attached
-- Bridged Adapter (not recommended)
+```
+Settings → Network → Adapter 1 → Attached to: [choose mode]
 ```
 
 **CLI:**
@@ -725,22 +857,20 @@ VBoxManage modifyvm "Ubuntu-24.04" --nic1 nat
 VBoxManage natnetwork add --netname "SecureNet" --network "10.0.2.0/24" --enable
 VBoxManage modifyvm "Ubuntu-24.04" --nic1 natnetwork --natnetwork1 "SecureNet"
 
-# Host-Only — no internet, VM can communicate with host and other VMs
-# Replace "vboxnet0" with your host-only adapter name
+# Host-Only — no internet, VM can communicate with host and other VMs on same adapter
+# Replace "vboxnet0" with your host-only adapter name (see tip below)
 VBoxManage modifyvm "Ubuntu-24.04" --nic1 hostonly --hostonlyadapter1 "vboxnet0"
 
 # Internal Network — no internet, no host access, VM-to-VM only
-# Replace "intnet" with your chosen internal network name
-# This name must match across all VMs that need to communicate
+# The name "intnet" is arbitrary — must match across all VMs that need to communicate
 VBoxManage modifyvm "Ubuntu-24.04" --nic1 intnet --intnet1 "intnet"
 
 # Not Attached — full network isolation
 VBoxManage modifyvm "Ubuntu-24.04" --nic1 none
 
 # Bridged — not recommended for hardened setups
-# VM is exposed directly to your physical network
-# Replace "eth0" with your actual host network interface name
-# Run 'ip link show' on Linux or 'ipconfig' on Windows to find it
+# VM appears as a device on your physical network
+# Replace "eth0" with your actual host network interface (run 'ip link show' to find it)
 VBoxManage modifyvm "Ubuntu-24.04" --nic1 bridged --bridgeadapter1 "eth0"
 ```
 
@@ -757,15 +887,22 @@ VBoxManage modifyvm "Ubuntu-24.04" --nic1 bridged --bridgeadapter1 "eth0"
 
 ### 4d: Disable USB Access
 
+✅ *Tested*
+
+**Why:** USB passthrough gives the guest direct access to physical USB hardware on the host.
+A compromised guest could interact with USB storage (data exfiltration), HID devices
+(keyboard/mouse injection), or USB firmware. If the VM doesn't need USB, disable all controllers.
+
 **GUI:**
-```md
+```
 Settings → USB
 - Uncheck "Enable USB Controller"
 ```
 
 **CLI:**
 ```bash
-# Disable all USB controllers (OHCI = USB 1.1, EHCI = USB 2.0, xHCI = USB 3.0)
+# Disable all USB controllers
+# OHCI = USB 1.1 | EHCI = USB 2.0 | xHCI = USB 3.0
 VBoxManage modifyvm "Ubuntu-24.04" --usbohci off
 VBoxManage modifyvm "Ubuntu-24.04" --usbehci off
 VBoxManage modifyvm "Ubuntu-24.04" --usbxhci off
@@ -775,18 +912,26 @@ VBoxManage modifyvm "Ubuntu-24.04" --usbxhci off
 
 ### 4e: Take a Clean Snapshot
 
+✅ *Tested*
+
+**Why:** A snapshot captures the complete VM state at a point in time. If the VM is
+later compromised or misconfigured, you can restore to a known-good baseline rather
+than rebuilding from scratch. The post-harden snapshot is your recovery point —
+treat it as permanent.
+
 **GUI:**
-```md
+```
 Machine → Take Snapshot → Name: "Post-Harden Baseline"
 ```
 
 **CLI:**
 ```bash
 # Take a snapshot of the current VM state
-VBoxManage snapshot "Ubuntu-24.04" take "Post-Harden Baseline" --description "Clean hardened baseline"
+VBoxManage snapshot "Ubuntu-24.04" take "Post-Harden Baseline" \
+  --description "Clean hardened baseline — Ubuntu 24.04, VirtualBox 7.x"
 ```
 
-> 📓 Snapshots allow rollback if the VM is later compromised or misconfigured.
+> 📓 Snapshots are stored within the VM directory. They are not external backups.
 > Take a new snapshot after any significant configuration change.
 
 </details>
@@ -811,7 +956,7 @@ Confirm the VM is secure and establish a maintenance routine.
 - [ ] Shared folders removed or restricted
 - [ ] USB controller disabled
 - [ ] Network mode configured per threat model (see Step 4c)
-- [ ] Clean snapshot taken
+- [ ] Clean snapshot taken and labeled
 
 **Ubuntu OS**
 - [ ] System fully updated
@@ -821,8 +966,8 @@ Confirm the VM is secure and establish a maintenance routine.
 - [ ] No unnecessary services running
 - [ ] Login requires password
 
-**Ubuntu OS — Optional Steps**
-- [ ] AppArmor active and enforcing
+**Ubuntu OS — Optional Steps Applied**
+- [ ] AppArmor active and enforcing (not complain mode)
 - [ ] sysctl hardening applied (if applicable)
 - [ ] SSH hardened or port 22 confirmed closed (if applicable)
 - [ ] Audit logging enabled (if applicable)
@@ -850,14 +995,17 @@ systemctl --failed
 
 ### 5c: Snapshot Strategy
 
-```md
-- Post-Harden Baseline  → taken after Step 4 (never delete)
-- Post-Update           → taken after major system updates
-- Pre-Change            → taken before any configuration changes
+```
+Snapshot Name          When to Take
+──────────────────────────────────────────────────────
+Post-Harden Baseline   After completing Step 4 — never delete this
+Post-Update            After major system updates
+Pre-Change             Before any configuration changes
 ```
 
-> 📓 Label snapshots clearly with dates or descriptions.
-> VirtualBox snapshots do not replace external backups.
+> 📓 Label snapshots with dates or descriptions.
+> VirtualBox snapshots do not replace external backups — they only protect
+> against changes within the VM, not against host-level failures.
 
 </details>
 
@@ -875,9 +1023,11 @@ systemctl --failed
 4. [Ubuntu — Security Guide](https://ubuntu.com/security)
 5. [Ubuntu — UFW Documentation](https://help.ubuntu.com/community/UFW)
 6. [Ubuntu — Automatic Updates](https://help.ubuntu.com/community/AutomaticSecurityUpdates)
+7. [Linux Kernel — sysctl documentation](https://www.kernel.org/doc/html/latest/admin-guide/sysctl/)
+8. [linux-audit — auditd project](https://github.com/linux-audit/audit-userspace)
 
 </details>
 
 ---
 
-## Good Luck!
+*Authored and maintained by SaltedBytes. Last reviewed: 2026. Tested on Ubuntu 24.04 LTS / VirtualBox 7.x.*
