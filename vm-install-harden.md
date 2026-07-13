@@ -1,4 +1,5 @@
 # Virtual Machine Install & Harden 🛡️
+# Draft Mode 🚧 Work in Progress
 
 Set up and harden an **Ubuntu** virtual machine (VM) in **VirtualBox** (VBox) with secure defaults, including VM creation, installation, and basic post-install security.
 
