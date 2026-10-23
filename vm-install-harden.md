@@ -1,5 +1,7 @@
 # Virtual Machine Install & Harden 🛡️
 
+🚧In Progress...🚧
+
 Set up and harden an **Ubuntu** virtual machine (VM) in **VirtualBox** with secure
 defaults, including VM creation, installation, and post-install security hardening.
 
